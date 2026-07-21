@@ -1,0 +1,32 @@
+name: 버그 제보
+description: 발생한 버그를 제보합니다.
+title: "[Bug] "
+labels:
+  - bug
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: 내용
+      description: 발생한 문제를 작성해주세요.
+      placeholder: 예) 로그인 시 500 오류가 발생합니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 재현 방법
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 기대 결과
+      placeholder: 정상적으로 로그인되어야 합니다.
