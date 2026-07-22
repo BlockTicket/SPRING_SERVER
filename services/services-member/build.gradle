@@ -3,9 +3,6 @@ dependencies {
     implementation project(':core:core-common')
     implementation project(':core:core-security')
 
-    // Spring Security
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-
     implementation 'org.springframework.boot:spring-boot-starter'
 
     // Spring Web
