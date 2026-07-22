@@ -11,13 +11,13 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Objects;
 
-public class HmacSHA512PasswordEncoder implements PasswordEncoder {
+public class Pbkdf2HmacSHA512PasswordEncoder implements PasswordEncoder {
 
 	private static final int SALT_LENGTH = 32;
 	private final String pepper;
 	private final int iterations;
 
-	public HmacSHA512PasswordEncoder(
+	public Pbkdf2HmacSHA512PasswordEncoder(
 			String pepper,
 			int iterations
 	) {
@@ -85,19 +85,30 @@ public class HmacSHA512PasswordEncoder implements PasswordEncoder {
 			);
 
 			mac.init(key);
-			mac.update(salt);
 
-			byte[] hash = mac.doFinal();
+			byte[] saltWithBlockIndex = new byte[salt.length + 4];
+
+			System.arraycopy(salt, 0, saltWithBlockIndex, 0, salt.length);
+
+			saltWithBlockIndex[salt.length] = 0;
+			saltWithBlockIndex[salt.length + 1] = 0;
+			saltWithBlockIndex[salt.length + 2] = 0;
+			saltWithBlockIndex[salt.length + 3] = 1;
+
+			byte[] u = mac.doFinal(saltWithBlockIndex);
+			byte[] result = u.clone();
 
 			for (int i = 0; i < iterations; i++) {
 
-				mac.reset();
-				mac.update(hash);
+				u = mac.doFinal(u);
 
-				hash = mac.doFinal();
+				for (int j = 0; j < result.length; j++) {
+
+					result[j] ^= u[j];
+				}
 			}
 
-			return hash;
+			return result;
 		} catch (Exception e) {
 
 			throw new RuntimeException("Cannot create pw hash");

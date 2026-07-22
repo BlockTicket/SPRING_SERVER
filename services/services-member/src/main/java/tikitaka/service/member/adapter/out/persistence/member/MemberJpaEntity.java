@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity
 @SuperBuilder
 @NoArgsConstructor
+@Table(name = "member")
 public class MemberJpaEntity {
 
 	@Id

@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import tikitaka.core.security.config.HmacSHA512PasswordEncoder;
+import tikitaka.core.security.config.Pbkdf2HmacSHA512PasswordEncoder;
 
 @Configuration
 public class SecurityConfig {
@@ -32,7 +32,7 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 
-		return new HmacSHA512PasswordEncoder(pepper, iterations);
+		return new Pbkdf2HmacSHA512PasswordEncoder(pepper, iterations);
 	}
 
 	@Bean
