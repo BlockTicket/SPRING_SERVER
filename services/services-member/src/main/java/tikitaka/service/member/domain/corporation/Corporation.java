@@ -1,4 +1,4 @@
-package tikitaka.service.member.domain.member;
+package tikitaka.service.member.domain.corporation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
-public class Member {
+public class Corporation {
 
 	private UUID id;
 
@@ -21,6 +21,4 @@ public class Member {
 	private String password;
 
 	private UserType userType;
-
-	private Provider provider;
 }

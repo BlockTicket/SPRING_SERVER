@@ -46,13 +46,17 @@ public class SecurityConfig {
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				)
-				.authorizeHttpRequests(
-						auth ->
-								auth
-										.requestMatchers(
-											HttpMethod.POST,
-											"/api/member/register"
-										).permitAll()
+				.authorizeHttpRequests(auth ->
+						auth
+								.requestMatchers(
+										HttpMethod.POST,
+										"/api/member/register"
+								).permitAll()
+
+								.requestMatchers(
+										HttpMethod.POST,
+										"/api/corporation/register"
+								).permitAll()
 				);
 
 		return httpSecurity.build();

@@ -1,10 +1,10 @@
-package tikitaka.service.member.application.service;
+package tikitaka.service.member.application.service.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import tikitaka.service.member.application.port.in.RegisterMemberCommand;
-import tikitaka.service.member.application.port.in.RegisterMemberUseCase;
-import tikitaka.service.member.application.port.out.SaveMemberPort;
+import tikitaka.service.member.application.port.in.member.RegisterMemberCommand;
+import tikitaka.service.member.application.port.in.member.RegisterMemberUseCase;
+import tikitaka.service.member.application.port.out.member.SaveMemberPort;
 import tikitaka.service.member.domain.member.Member;
 
 @Service

@@ -1,4 +1,4 @@
-package tikitaka.service.member.application.port.in;
+package tikitaka.service.member.application.port.in.member;
 
 public interface RegisterMemberUseCase {
 

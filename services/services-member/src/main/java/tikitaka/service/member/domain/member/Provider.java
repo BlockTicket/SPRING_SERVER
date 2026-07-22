@@ -1,4 +1,4 @@
-package tikitaka.service.member.domain.enums;
+package tikitaka.service.member.domain.member;
 
 public enum Provider {
 

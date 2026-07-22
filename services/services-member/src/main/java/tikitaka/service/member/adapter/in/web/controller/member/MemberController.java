@@ -1,4 +1,4 @@
-package tikitaka.service.member.adapter.in.web.controller;
+package tikitaka.service.member.adapter.in.web.controller.member;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tikitaka.core.common.data.CommonResponse;
-import tikitaka.service.member.adapter.in.web.data.request.RegisterMemberRequest;
-import tikitaka.service.member.application.port.in.RegisterMemberUseCase;
+import tikitaka.service.member.adapter.in.web.data.request.member.RegisterMemberRequest;
+import tikitaka.service.member.application.port.in.member.RegisterMemberUseCase;
 
 @RestController
 @RequiredArgsConstructor

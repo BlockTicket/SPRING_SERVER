@@ -1,6 +1,6 @@
-package tikitaka.service.member.application.port.in;
+package tikitaka.service.member.application.port.in.member;
 
-import tikitaka.service.member.domain.enums.Provider;
+import tikitaka.service.member.domain.member.Provider;
 import tikitaka.service.member.domain.enums.UserType;
 
 import java.util.UUID;
