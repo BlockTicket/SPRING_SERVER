@@ -1,0 +1,20 @@
+spring:
+  config:
+    import: optional:file:/services/service-member/.env[.properties]
+
+  application:
+    name: service-member
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8080

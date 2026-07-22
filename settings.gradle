@@ -1,3 +1,6 @@
-include ":core:core-common"
+include (":core:core-common")
+include (":core:core-security")
+
+include (":services:services-member")
 
 rootProject.name = 'blockticket_server'

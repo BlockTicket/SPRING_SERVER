@@ -1,13 +1,13 @@
-package tikitaka.core.common;
+package tikitaka.service.member;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CoreCommonApplication {
+public class ServiceMemberApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CoreCommonApplication.class, args);
+		SpringApplication.run(ServiceMemberApplication.class, args);
 	}
 
 }

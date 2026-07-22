@@ -1,0 +1,32 @@
+package tikitaka.service.member.adapter.in.web.controller;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import tikitaka.core.common.data.CommonResponse;
+import tikitaka.service.member.adapter.in.web.data.request.RegisterMemberRequest;
+import tikitaka.service.member.application.port.in.RegisterMemberUseCase;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/member")
+public class MemberController {
+
+	private final RegisterMemberUseCase registerMemberUseCase;
+
+	@PostMapping("/register")
+	public ResponseEntity<CommonResponse<Void>> register(
+			@Valid @RequestBody RegisterMemberRequest registerMemberRequest
+	) {
+
+		registerMemberUseCase.registerMember(
+				registerMemberRequest.toCommand()
+		);
+
+		return CommonResponse.ok("회원가입 되었습니다.").toResponseEntity();
+	}
+}
