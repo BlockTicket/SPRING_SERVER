@@ -31,9 +31,9 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				member.getPhone()
 		);
 
-		if (duplicateCheck.getUsernameExists() > 0) { throw new UsernameAlreadyExist(); }
-		else if (duplicateCheck.getEmailExists() > 0) { throw new EmailAlreadyExist(); }
-		else if (duplicateCheck.getPhoneExists() > 0) { throw new PhoneAlreadyExist(); }
+		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExist();
+		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExist();
+		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExist();
 
 		memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(member.getId())
