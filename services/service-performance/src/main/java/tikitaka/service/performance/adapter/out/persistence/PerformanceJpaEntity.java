@@ -28,7 +28,6 @@ public class PerformanceJpaEntity {
     private String location;
     @Column(length = 20)
     private String ageLimit;
-    private String performanceImage;
 
     @Builder
     public PerformanceJpaEntity(
