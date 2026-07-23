@@ -147,8 +147,11 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
-.build
+# End of https://www.toptal.com/developers/gitignore/api/intellij,macos,dotenv
+
+### Gradle ###
+.gradle
 build/
 
-.gradle/
-# End of https://www.toptal.com/developers/gitignore/api/intellij,macos,dotenv
+### IntelliJ ###
+.idea/
