@@ -148,8 +148,7 @@ Temporary Items
 *.icloud
 
 .build
-/build
+build/
 
-.gradle
-/gradle
+.gradle/
 # End of https://www.toptal.com/developers/gitignore/api/intellij,macos,dotenv
