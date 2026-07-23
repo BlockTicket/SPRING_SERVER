@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tikitaka.core.common.data.CommonResponse;
 import tikitaka.core.common.exception.CommonException;
 import tikitaka.core.common.handler.GlobalExceptionHandler;
-import tikitaka.service.member.domain.exception.exception.EmailAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.PhoneAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.UsernameAlreadyExist;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.PhoneAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.UsernameAlreadyExistException;
 
 @RestControllerAdvice
 public class MemberExceptionHandler implements GlobalExceptionHandler {
@@ -24,33 +24,33 @@ public class MemberExceptionHandler implements GlobalExceptionHandler {
 				.toResponseEntity();
 	}
 
-	@ExceptionHandler(UsernameAlreadyExist.class)
+	@ExceptionHandler(UsernameAlreadyExistException.class)
 	public ResponseEntity<CommonResponse<Void>> usernameHandler(
-			UsernameAlreadyExist usernameAlreadyExist
+			UsernameAlreadyExistException usernameAlreadyExistException
 	) {
 
 		return CommonResponse
-				.error(usernameAlreadyExist)
+				.error(usernameAlreadyExistException)
 				.toResponseEntity();
 	}
 
-	@ExceptionHandler(EmailAlreadyExist.class)
+	@ExceptionHandler(EmailAlreadyExistException.class)
 	public ResponseEntity<CommonResponse<Void>> emailHandler(
-			EmailAlreadyExist emailAlreadyExist
+			EmailAlreadyExistException emailAlreadyExistException
 	) {
 
 		return CommonResponse
-				.error(emailAlreadyExist)
+				.error(emailAlreadyExistException)
 				.toResponseEntity();
 	}
 
-	@ExceptionHandler(PhoneAlreadyExist.class)
+	@ExceptionHandler(PhoneAlreadyExistException.class)
 	public ResponseEntity<CommonResponse<Void>> phoneHandler(
-			PhoneAlreadyExist phoneAlreadyExist
+			PhoneAlreadyExistException phoneAlreadyExistException
 	) {
 
 		return CommonResponse
-				.error(phoneAlreadyExist)
+				.error(phoneAlreadyExistException)
 				.toResponseEntity();
 	}
 }

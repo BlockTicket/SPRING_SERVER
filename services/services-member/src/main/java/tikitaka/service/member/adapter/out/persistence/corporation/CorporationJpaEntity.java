@@ -3,6 +3,7 @@ package tikitaka.service.member.adapter.out.persistence.corporation;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import tikitaka.service.member.adapter.out.persistence.external.nts.NtsBusinessJpaEntity;
 import tikitaka.service.member.domain.enums.UserType;
 
 import java.util.UUID;
@@ -30,4 +31,7 @@ public class CorporationJpaEntity {
 
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
+
+	@OneToOne(mappedBy = "corporationJpaEntity")
+	private NtsBusinessJpaEntity ntsBusinessJpaEntity;
 }

@@ -5,9 +5,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.member.SaveMemberPort;
-import tikitaka.service.member.domain.exception.exception.EmailAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.PhoneAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.UsernameAlreadyExist;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.PhoneAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.UsernameAlreadyExistException;
 import tikitaka.service.member.domain.member.Member;
 
 @Component
@@ -27,9 +27,9 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				member.getPhone()
 		);
 
-		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExist();
-		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExist();
-		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExist();
+		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
+		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
+		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 
 		memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(member.getId())

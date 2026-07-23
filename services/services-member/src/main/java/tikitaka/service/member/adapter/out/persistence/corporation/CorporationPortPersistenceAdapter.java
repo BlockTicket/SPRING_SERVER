@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.adapter.out.persistence.member.DuplicateCheck;
 import tikitaka.service.member.application.port.out.corporation.SaveCorporationPort;
 import tikitaka.service.member.domain.corporation.Corporation;
-import tikitaka.service.member.domain.exception.exception.EmailAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.PhoneAlreadyExist;
-import tikitaka.service.member.domain.exception.exception.UsernameAlreadyExist;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.PhoneAlreadyExistException;
+import tikitaka.service.member.adapter.in.web.exception.exception.member.UsernameAlreadyExistException;
 
 @Component
 @RequiredArgsConstructor
@@ -28,9 +28,9 @@ public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
 				corporation.getPhone()
 		);
 
-		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExist();
-		if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExist();
-		if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExist();
+		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
+		if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
+		if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 
 		corporationJpaRepository.save(CorporationJpaEntity.builder()
 				.id(corporation.getId())
