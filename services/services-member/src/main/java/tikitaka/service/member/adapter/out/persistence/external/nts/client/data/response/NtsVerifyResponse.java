@@ -1,6 +1,4 @@
-package tikitaka.service.member.adapter.in.web.data.response.external;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package tikitaka.service.member.adapter.out.persistence.external.nts.client.data.response;
 
 import java.util.List;
 

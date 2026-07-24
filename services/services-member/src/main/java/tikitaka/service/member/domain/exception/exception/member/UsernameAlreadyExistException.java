@@ -1,7 +1,7 @@
-package tikitaka.service.member.adapter.in.web.exception.exception.member;
+package tikitaka.service.member.domain.exception.exception.member;
 
 import tikitaka.core.common.exception.CommonException;
-import tikitaka.service.member.adapter.in.web.exception.status_code.MemberStatusCode;
+import tikitaka.service.member.domain.exception.status_code.MemberStatusCode;
 
 public class UsernameAlreadyExistException extends CommonException {
 

@@ -1,7 +1,6 @@
 package tikitaka.service.member.application.port.in.member;
 
 import tikitaka.service.member.domain.member.Provider;
-import tikitaka.service.member.domain.enums.UserType;
 
 import java.util.UUID;
 
@@ -11,7 +10,6 @@ public record RegisterMemberCommand(
 		String email,
 		String phone,
 		String password,
-		UserType userType,
 		Provider provider
 ) {
 }

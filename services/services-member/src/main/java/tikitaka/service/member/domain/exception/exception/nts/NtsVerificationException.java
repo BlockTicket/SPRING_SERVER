@@ -1,7 +1,7 @@
-package tikitaka.service.member.adapter.in.web.exception.exception.nts;
+package tikitaka.service.member.domain.exception.exception.nts;
 
 import tikitaka.core.common.exception.CommonException;
-import tikitaka.service.member.adapter.in.web.exception.status_code.NtsVerificationStatusCode;
+import tikitaka.service.member.domain.exception.status_code.NtsVerificationStatusCode;
 
 public class NtsVerificationException extends CommonException {
 

@@ -5,9 +5,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.member.SaveMemberPort;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.PhoneAlreadyExistException;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.UsernameAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.EmailAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.PhoneAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 import tikitaka.service.member.domain.member.Member;
 
 @Component
@@ -21,15 +21,11 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 	@Override
 	public void saveMember(Member member) {
 
-		DuplicateCheck duplicateCheck = memberJpaRepository.checkDuplicate(
+		duplicateCheck(
 				member.getUsername(),
 				member.getEmail(),
 				member.getPhone()
 		);
-
-		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
-		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
-		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 
 		memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(member.getId())
@@ -37,9 +33,25 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				.email(member.getEmail())
 				.phone(member.getPhone())
 				.password(passwordEncoder.encode(member.getPassword()))
-				.userType(member.getUserType())
 				.provider(member.getProvider())
 				.build()
 		);
+	}
+
+	private void duplicateCheck(
+			String username,
+			String email,
+			String phone
+	) {
+
+		DuplicateCheck duplicateCheck = memberJpaRepository.checkDuplicate(
+				username,
+				email,
+				phone
+		);
+
+		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
+		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
+		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 	}
 }

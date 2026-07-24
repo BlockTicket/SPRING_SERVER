@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationCommand;
-import tikitaka.service.member.domain.enums.UserType;
 import tikitaka.service.member.domain.nts_business.NtsBusiness;
 
 import java.util.UUID;
@@ -63,7 +62,6 @@ public record RegisterCorporationRequest(
 				email,
 				phone,
 				password,
-				UserType.CORPORATION,
 				new NtsBusiness(
 						business.b_no(),
 						business.start_dt(),

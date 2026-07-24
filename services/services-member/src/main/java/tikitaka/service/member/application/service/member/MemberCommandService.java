@@ -24,7 +24,6 @@ public class MemberCommandService implements RegisterMemberUseCase {
 				registerMemberCommand.email(),
 				registerMemberCommand.phone(),
 				registerMemberCommand.password(),
-				registerMemberCommand.userType(),
 				registerMemberCommand.provider()
 		));
 	}

@@ -1,4 +1,4 @@
-package tikitaka.service.member.adapter.in.web.exception.status_code;
+package tikitaka.service.member.domain.exception.status_code;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

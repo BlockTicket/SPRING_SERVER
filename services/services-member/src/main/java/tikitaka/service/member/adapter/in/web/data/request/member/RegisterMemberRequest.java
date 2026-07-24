@@ -1,6 +1,5 @@
 package tikitaka.service.member.adapter.in.web.data.request.member;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.l98293.phone.Format;
 import com.l98293.phone.Phone;
 import com.l98293.phone.Region;
@@ -10,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import tikitaka.service.member.application.port.in.member.RegisterMemberCommand;
 import tikitaka.service.member.domain.member.Provider;
-import tikitaka.service.member.domain.enums.UserType;
 
 import java.util.UUID;
 
@@ -48,7 +46,6 @@ public record RegisterMemberRequest(
 				email,
 				phone,
 				password,
-				UserType.PERSONAL,
 				provider
 		);
 	}

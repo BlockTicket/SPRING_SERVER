@@ -1,4 +1,4 @@
-package tikitaka.service.member.adapter.in.web.data.request.external;
+package tikitaka.service.member.adapter.out.persistence.external.nts.client.data.request;
 
 import tikitaka.service.member.application.port.in.external.NtsVerificationCommand;
 
@@ -17,17 +17,5 @@ public record NtsVerifyRequest(
 
 			String b_nm // 상호(명)
 	) {
-	}
-
-	public NtsVerificationCommand toCommand() {
-
-		Business business = businesses.getFirst();
-
-		return new NtsVerificationCommand(
-				business.b_no(),
-				business.start_dt(),
-				business.p_nm(),
-				business.b_nm()
-		);
 	}
 }

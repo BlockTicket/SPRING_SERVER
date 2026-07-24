@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.corporation.SaveCorporationPort;
 import tikitaka.service.member.domain.corporation.Corporation;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.PhoneAlreadyExistException;
-import tikitaka.service.member.adapter.in.web.exception.exception.member.UsernameAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.EmailAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.PhoneAlreadyExistException;
+import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 
 @Component
 @RequiredArgsConstructor
@@ -35,7 +35,6 @@ public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
 				.email(corporation.getEmail())
 				.phone(corporation.getPhone())
 				.password(passwordEncoder.encode(corporation.getPassword()))
-				.userType(corporation.getUserType())
 				.build()
 		);
 	}

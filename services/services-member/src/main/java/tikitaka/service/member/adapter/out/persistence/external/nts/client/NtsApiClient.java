@@ -1,12 +1,12 @@
-package tikitaka.service.member.adapter.out.persistence.external.nts;
+package tikitaka.service.member.adapter.out.persistence.external.nts.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import tikitaka.service.member.adapter.in.web.data.request.external.NtsVerifyRequest;
-import tikitaka.service.member.adapter.in.web.data.response.external.NtsVerifyResponse;
+import tikitaka.service.member.adapter.out.persistence.external.nts.client.data.request.NtsVerifyRequest;
+import tikitaka.service.member.adapter.out.persistence.external.nts.client.data.response.NtsVerifyResponse;
 
 import java.time.Duration;
 
