@@ -30,11 +30,13 @@ public class S3StorageAdapter implements FileStoragePort {
                 .build();
 
         try {
+
             s3Client.putObject(
                     request,
                     RequestBody.fromInputStream(fileContent.inputStream(), fileContent.size())
             );
         } catch (Exception e) {
+
             log.error("파일 업로드 도중 문제가 발생했습니다.", e);
             throw new CommonException(FileErrorCode.FILE_UPLOAD_FAILED);
         }

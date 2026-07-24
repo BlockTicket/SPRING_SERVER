@@ -15,7 +15,9 @@ public class FilePersistenceAdapter implements FilePort {
 
     @Override
     public File save(File file) {
+
         fileRepository.save(fileMapper.toEntity(file));
+
         return file;
     }
 }

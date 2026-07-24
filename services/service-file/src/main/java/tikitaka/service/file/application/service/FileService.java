@@ -14,11 +14,13 @@ import tikitaka.service.file.domain.File;
 @Transactional(rollbackFor = Exception.class)
 @RequiredArgsConstructor
 public class FileService implements UploadFileUseCase {
+
     private final FilePort filePort;
     private final FileStoragePort fileStoragePort;
 
     @Override
     public File uploadFile(UploadFileCommand command) {
+
         File file = File.create(command.fileType(), command.originalFilename());
 
         filePort.save(file);

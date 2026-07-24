@@ -19,6 +19,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FileJpaEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID fileId;

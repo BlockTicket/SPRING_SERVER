@@ -8,6 +8,7 @@ import tikitaka.service.file.domain.File;
 public class FileMapper {
 
     public FileJpaEntity toEntity(File file) {
+
         return FileJpaEntity.builder()
                 .fileType(file.getFileType())
                 .s3Key(file.getS3Key())

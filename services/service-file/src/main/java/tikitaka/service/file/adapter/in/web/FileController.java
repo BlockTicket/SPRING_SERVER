@@ -5,8 +5,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FileController {
+
     @GetMapping("/health")
     public String health() {
+
         return "health";
     }
 }
