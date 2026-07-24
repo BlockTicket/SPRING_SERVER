@@ -33,7 +33,4 @@ public class NtsBusinessJpaEntity {
 
 	@Column(length = 50, nullable = false)
 	private String bNm; // 상호명
-
-	@Column(length = 200, nullable = false)
-	private String bAdr; // 사업장 주소
 }

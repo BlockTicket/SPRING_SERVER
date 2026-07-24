@@ -3,7 +3,6 @@ package tikitaka.service.member.adapter.out.persistence.corporation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import tikitaka.service.member.adapter.out.persistence.member.DuplicateCheck;
 
 import java.util.UUID;
 
@@ -24,7 +23,7 @@ public interface CorporationJpaRepository extends JpaRepository<CorporationJpaEn
 			WHERE phone = :phone
 		) AS phoneExists
 	""", nativeQuery = true)
-	DuplicateCheck checkDuplicate(
+	CorporationDuplicateCheck corporationDuplicateCheck(
 			@Param("username") String username,
 			@Param("email") String email,
 			@Param("phone") String phone

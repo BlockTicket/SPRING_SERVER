@@ -1,6 +1,7 @@
 package tikitaka.service.member.application.port.in.corporation;
 
 import tikitaka.service.member.domain.enums.UserType;
+import tikitaka.service.member.domain.nts_business.NtsBusiness;
 
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ public record RegisterCorporationCommand(
 		String email,
 		String phone,
 		String password,
-		UserType userType
+		UserType userType,
+		NtsBusiness ntsBusiness
 ) {
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import tikitaka.service.member.adapter.out.persistence.member.DuplicateCheck;
 import tikitaka.service.member.application.port.out.corporation.SaveCorporationPort;
 import tikitaka.service.member.domain.corporation.Corporation;
 import tikitaka.service.member.adapter.in.web.exception.exception.member.EmailAlreadyExistException;
@@ -20,17 +19,19 @@ public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
 	private final CorporationJpaRepository corporationJpaRepository;
 
 	@Override
-	public void saveCorporation(Corporation corporation) {
+	public void saveCorporation(
+			Corporation corporation
+	) {
 
-		DuplicateCheck duplicateCheck = corporationJpaRepository.checkDuplicate(
+		CorporationDuplicateCheck corporationDuplicateCheck = corporationJpaRepository.corporationDuplicateCheck(
 				corporation.getUsername(),
 				corporation.getEmail(),
 				corporation.getPhone()
 		);
 
-		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
-		if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
-		if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
+		if (corporationDuplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
+		if (corporationDuplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
+		if (corporationDuplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 
 		corporationJpaRepository.save(CorporationJpaEntity.builder()
 				.id(corporation.getId())

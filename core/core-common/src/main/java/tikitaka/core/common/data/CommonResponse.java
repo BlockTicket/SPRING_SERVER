@@ -59,8 +59,8 @@ public record CommonResponse<T>(
 
 		return CommonResponse.of(
 				commonException.statusCode.getHttpStatus(),
-				commonException.statusCode.getCode(),
 				commonException.statusCode.getMessage(),
+				commonException.statusCode.getCode(),
 				null
 		);
 	}

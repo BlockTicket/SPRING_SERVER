@@ -1,6 +1,6 @@
 package tikitaka.service.member.adapter.out.persistence.corporation;
 
-public interface DuplicateCheck {
+public interface CorporationDuplicateCheck {
 
 	Long getUsernameExists();
 	Long getEmailExists();

@@ -8,8 +8,7 @@ public record NtsVerificationCommand(
 		String bNo,
 		String startDt,
 		String pNm,
-		String bNm,
-		String bAdr
+		String bNm
 ) {
 
 	public NtsVerifyRequest toRequest(
@@ -22,8 +21,7 @@ public record NtsVerificationCommand(
 								ntsVerificationCommand.bNo,
 								ntsVerificationCommand.startDt,
 								ntsVerificationCommand.pNm,
-								ntsVerificationCommand.bNm,
-								ntsVerificationCommand.bAdr
+								ntsVerificationCommand.bNm
 						)
 				)
 		);

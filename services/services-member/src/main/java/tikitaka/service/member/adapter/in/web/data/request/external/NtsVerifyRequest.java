@@ -15,9 +15,7 @@ public record NtsVerifyRequest(
 
 			String p_nm, // 대표자 성명
 
-			String b_nm, // 상호(명)
-
-			String b_adr // 사업장 주소
+			String b_nm // 상호(명)
 	) {
 	}
 
@@ -29,8 +27,7 @@ public record NtsVerifyRequest(
 				business.b_no(),
 				business.start_dt(),
 				business.p_nm(),
-				business.b_nm(),
-				business.b_adr()
+				business.b_nm()
 		);
 	}
 }
