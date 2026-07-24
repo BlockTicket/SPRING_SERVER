@@ -19,6 +19,7 @@ public record RegisterCorporationRequest(
 		String username,
 
 		@Email
+		@NotBlank
 		String email,
 
 		@NotBlank

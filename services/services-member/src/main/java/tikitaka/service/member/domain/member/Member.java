@@ -2,7 +2,6 @@ package tikitaka.service.member.domain.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import tikitaka.service.member.domain.enums.UserType;
 
 import java.util.UUID;
 
@@ -19,8 +18,6 @@ public class Member {
 	private String phone;
 
 	private String password;
-
-	private UserType userType;
 
 	private Provider provider;
 }

@@ -19,6 +19,7 @@ public record RegisterMemberRequest(
 		String username,
 
 		@Email
+		@NotBlank
 		String email,
 
 		@NotBlank

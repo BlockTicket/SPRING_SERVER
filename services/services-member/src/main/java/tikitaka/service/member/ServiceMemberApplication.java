@@ -10,6 +10,7 @@ import tikitaka.core.common.handler.GlobalExceptionHandler;
 public class ServiceMemberApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(ServiceMemberApplication.class, args);
 	}
 

@@ -23,15 +23,11 @@ public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
 			Corporation corporation
 	) {
 
-		CorporationDuplicateCheck corporationDuplicateCheck = corporationJpaRepository.corporationDuplicateCheck(
+		duplicateCheck(
 				corporation.getUsername(),
 				corporation.getEmail(),
 				corporation.getPhone()
 		);
-
-		if (corporationDuplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
-		if (corporationDuplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
-		if (corporationDuplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 
 		corporationJpaRepository.save(CorporationJpaEntity.builder()
 				.id(corporation.getId())
@@ -42,5 +38,22 @@ public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
 				.userType(corporation.getUserType())
 				.build()
 		);
+	}
+
+	private void duplicateCheck(
+			String username,
+			String email,
+			String phone
+	) {
+
+		CorporationDuplicateCheck corporationDuplicateCheck = corporationJpaRepository.corporationDuplicateCheck(
+				username,
+				email,
+				phone
+		);
+
+		if (corporationDuplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();
+		if (corporationDuplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
+		if (corporationDuplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 	}
 }
