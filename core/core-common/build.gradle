@@ -2,8 +2,6 @@ plugins {
     id 'java-library'
 }
 
-description = 'core-common'
-
 dependencies {
     api 'org.springframework:spring-web'
     api 'com.fasterxml.jackson.core:jackson-annotations'
