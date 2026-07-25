@@ -1,6 +1,8 @@
 include ":core:core-common"
 include ":core:core-kafka"
+include ":core:core-security"
 
 include ":services:service-file"
+include ":services:service-member"
 
 rootProject.name = 'blockticket_server'

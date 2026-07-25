@@ -11,7 +11,6 @@ build/
 
 ### Java ###
 *.class
-out/
 bin/
 *.log
 logs/
