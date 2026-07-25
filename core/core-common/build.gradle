@@ -3,7 +3,11 @@ plugins {
 }
 
 dependencies {
-    api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+    api 'org.springframework:spring-web'
+    api 'com.fasterxml.jackson.core:jackson-annotations'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
