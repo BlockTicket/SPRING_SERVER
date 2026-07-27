@@ -90,7 +90,28 @@ public class JwtAdapter implements JwtPort {
 		} catch (Exception e) {
 
 			return false;
- 		}
+		}
+	}
+
+	@Override
+	public boolean validateAccessToken(
+			String token
+	) {
+
+		try {
+
+			Claims claims = Jwts.parser()
+					.verifyWith(secretKey)
+					.build()
+					.parseSignedClaims(token)
+					.getPayload();
+
+			return "access".equals(claims.get("type", String.class));
+
+		} catch (Exception e) {
+
+			return false;
+		}
 	}
 
 	@Override

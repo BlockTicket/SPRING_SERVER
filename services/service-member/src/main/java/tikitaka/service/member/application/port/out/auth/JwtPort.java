@@ -20,6 +20,10 @@ public interface JwtPort {
 			String token
 	);
 
+	boolean validateAccessToken(
+			String token
+	);
+
 	UUID getMemberId(
             String token
     );

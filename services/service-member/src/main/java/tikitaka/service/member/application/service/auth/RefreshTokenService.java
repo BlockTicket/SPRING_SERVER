@@ -7,6 +7,7 @@ import tikitaka.service.member.adapter.in.web.data.response.auth.LoginResponse;
 import tikitaka.service.member.application.port.in.auth.*;
 import tikitaka.service.member.application.port.out.auth.*;
 import tikitaka.service.member.config.JwtProperties;
+import tikitaka.service.member.domain.exception.exception.auth.InvalidAccessTokenException;
 import tikitaka.service.member.domain.exception.exception.auth.InvalidRefreshTokenException;
 
 import java.time.Duration;
@@ -97,30 +98,30 @@ public class RefreshTokenService implements
 
 	@Override
 	public void memberLogout(
-			MemberRefreshTokenCommand memberRefreshTokenCommand
+			MemberLogoutCommand memberLogoutCommand
 	) {
 
-		UUID memberId = getMemberId(memberRefreshTokenCommand.refreshToken());
+		UUID memberId = getAccessTokenMemberId(memberLogoutCommand.accessToken());
 
-		validateMemberRefreshToken(
-				memberId,
-				memberRefreshTokenCommand.refreshToken()
-		);
+		if (loadMemberRefreshTokenPort.loadMemberRefreshTokenByMemberId(memberId).isEmpty()) {
+
+			throw new InvalidAccessTokenException();
+		}
 
 		deleteMemberRefreshTokenPort.deleteMemberRefreshTokenByMemberId(memberId);
 	}
 
 	@Override
 	public void corporationLogout(
-			CorporationRefreshTokenCommand corporationRefreshTokenCommand
+			CorporationLogoutCommand corporationLogoutCommand
 	) {
 
-		UUID corporationId = getMemberId(corporationRefreshTokenCommand.refreshToken());
+		UUID corporationId = getAccessTokenMemberId(corporationLogoutCommand.accessToken());
 
-		validateCorporationRefreshToken(
-				corporationId,
-				corporationRefreshTokenCommand.refreshToken()
-		);
+		if (loadCorporationRefreshTokenPort.loadCorporationRefreshTokenByCorporationId(corporationId).isEmpty()) {
+
+			throw new InvalidAccessTokenException();
+		}
 
 		deleteCorporationRefreshTokenPort.deleteCorporationRefreshTokenByCorporationId(corporationId);
 	}
@@ -133,6 +134,16 @@ public class RefreshTokenService implements
 		}
 
 		return jwtPort.getMemberId(refreshToken);
+	}
+
+	private UUID getAccessTokenMemberId(String accessToken) {
+
+		if (!jwtPort.validateAccessToken(accessToken)) {
+
+			throw new InvalidAccessTokenException();
+		}
+
+		return jwtPort.getMemberId(accessToken);
 	}
 
 	private void validateMemberRefreshToken(
