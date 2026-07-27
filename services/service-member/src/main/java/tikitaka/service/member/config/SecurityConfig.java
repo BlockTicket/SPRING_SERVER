@@ -68,6 +68,14 @@ public class SecurityConfig {
 										HttpMethod.POST,
 										"/api/nts/business/validate"
 								).permitAll()
+
+                                .requestMatchers(
+                                        HttpMethod.POST,
+                                        "/api/v1/auth/member/login",
+                                        "/api/v1/auth/corporation/login",
+                                        "/api/v1/auth/member/refresh",
+                                        "/api/v1/auth/corporation/refresh"
+                                ).permitAll()
 				);
 
 		return httpSecurity.build();

@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tikitaka.service.member.application.port.out.auth.LoadMemberPort;
 import tikitaka.service.member.application.port.out.member.SaveMemberPort;
+import tikitaka.service.member.domain.exception.exception.auth.AccountNotFoundException;
 import tikitaka.service.member.domain.exception.exception.member.EmailAlreadyExistException;
 import tikitaka.service.member.domain.exception.exception.member.PhoneAlreadyExistException;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
@@ -13,7 +15,7 @@ import tikitaka.service.member.domain.member.Member;
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class MemberPersistenceAdapter implements SaveMemberPort {
+public class MemberPersistenceAdapter implements SaveMemberPort, LoadMemberPort {
 
 	private final PasswordEncoder passwordEncoder;
 	private final MemberJpaRepository memberJpaRepository;
@@ -54,4 +56,29 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 		else if (duplicateCheck.getEmailExists() > 0) throw new EmailAlreadyExistException();
 		else if (duplicateCheck.getPhoneExists() > 0) throw new PhoneAlreadyExistException();
 	}
+
+    @Override
+    @Transactional(readOnly = true)
+    public Member loadMemberByUsername(
+            String username
+    ) {
+
+        MemberJpaEntity memberJpaEntity = memberJpaRepository.findByUsername(
+                username
+        );
+
+        if (memberJpaEntity == null) {
+
+            throw new AccountNotFoundException();
+        }
+
+        return new Member(
+                memberJpaEntity.getId(),
+                memberJpaEntity.getUsername(),
+                memberJpaEntity.getEmail(),
+                memberJpaEntity.getPhone(),
+                memberJpaEntity.getPassword(),
+                memberJpaEntity.getProvider()
+        );
+    }
 }

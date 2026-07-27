@@ -8,6 +8,10 @@ import java.util.UUID;
 
 public interface MemberJpaRepository extends JpaRepository<MemberJpaEntity, UUID> {
 
+    MemberJpaEntity findByUsername(
+            String username
+    );
+
 	@Query(value = """
 	SELECT
 		EXISTS (

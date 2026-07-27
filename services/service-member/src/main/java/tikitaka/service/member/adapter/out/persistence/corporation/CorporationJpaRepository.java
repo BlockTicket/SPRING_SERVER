@@ -8,6 +8,10 @@ import java.util.UUID;
 
 public interface CorporationJpaRepository extends JpaRepository<CorporationJpaEntity, UUID> {
 
+    CorporationJpaEntity findByUsername(
+            String username
+    );
+
 	@Query(value = """
 	SELECT
 		EXISTS (
