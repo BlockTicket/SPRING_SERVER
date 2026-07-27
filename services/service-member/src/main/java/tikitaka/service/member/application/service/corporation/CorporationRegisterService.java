@@ -18,11 +18,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class CorporationCommandService implements RegisterCorporationUseCase {
+public class CorporationRegisterService implements RegisterCorporationUseCase {
 
 	private final SaveCorporationPort saveCorporationPort;
-	private final NtsVerificationPort ntsVerificationPort;
 	private final SaveNtsBusinessPort saveNtsBusinessPort;
+	private final NtsVerificationPort ntsVerificationPort;
 
 	@Override
 	public void registerCorporation(

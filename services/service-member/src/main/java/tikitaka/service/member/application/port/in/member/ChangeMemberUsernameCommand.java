@@ -4,6 +4,6 @@ import java.util.UUID;
 
 public record ChangeMemberUsernameCommand(
 		UUID id,
-		String username
+		String newUsername
 ) {
 }

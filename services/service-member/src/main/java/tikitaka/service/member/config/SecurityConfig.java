@@ -62,7 +62,8 @@ public class SecurityConfig {
 
 								.requestMatchers(
 										HttpMethod.POST,
-										"/api/corporation/register"
+										"/api/corporation/register",
+										"/api/corporation/username"
 								).permitAll()
 
 								.requestMatchers(

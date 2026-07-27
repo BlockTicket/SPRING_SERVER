@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tikitaka.core.common.data.CommonResponse;
+import tikitaka.service.member.adapter.in.web.data.request.corporation.ChangeCorporationUsernameRequest;
 import tikitaka.service.member.adapter.in.web.data.request.corporation.RegisterCorporationRequest;
 import tikitaka.service.member.adapter.in.web.data.request.member.ChangeMemberUsernameRequest;
 import tikitaka.service.member.adapter.in.web.data.request.member.RegisterMemberRequest;
+import tikitaka.service.member.application.port.in.corporation.ChangeCorporationUsernameUseCase;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationUseCase;
 import tikitaka.service.member.application.port.in.member.ChangeMemberUsernameUseCase;
 import tikitaka.service.member.application.port.in.member.RegisterMemberUseCase;
@@ -23,6 +25,7 @@ public class MemberController {
 	private final RegisterMemberUseCase registerMemberUseCase;
 	private final RegisterCorporationUseCase registerCorporationUseCase;
 	private final ChangeMemberUsernameUseCase changeMemberUsernameUseCase;
+	private final ChangeCorporationUsernameUseCase changeCorporationUsernameUseCase;
 
 	// 회원가입
 	@PostMapping("/member/register")
@@ -57,6 +60,18 @@ public class MemberController {
 
 		changeMemberUsernameUseCase.changeUsername(
 				changeMemberUsernameRequest.toCommand()
+		);
+
+		return CommonResponse.ok("사용자명이 변경되었습니다.").toResponseEntity();
+	}
+
+	@PostMapping("/corporation/username")
+	public ResponseEntity<CommonResponse<Void>> changeCorporationUsername(
+			@Valid @RequestBody ChangeCorporationUsernameRequest changeCorporationUsernameRequest
+	) {
+
+		changeCorporationUsernameUseCase.changeCorporationUsername(
+				changeCorporationUsernameRequest.toCommand()
 		);
 
 		return CommonResponse.ok("사용자명이 변경되었습니다.").toResponseEntity();

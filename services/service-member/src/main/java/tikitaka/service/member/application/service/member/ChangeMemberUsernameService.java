@@ -19,7 +19,7 @@ public class ChangeMemberUsernameService implements ChangeMemberUsernameUseCase 
 
 		changeMemberUsernamePort.changeUsername(
 				changeMemberUsernameCommand.id(),
-				changeMemberUsernameCommand.username()
+				changeMemberUsernameCommand.newUsername()
 		);
 	}
 }
