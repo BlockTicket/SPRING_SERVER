@@ -9,24 +9,29 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tikitaka.core.security.config.Pbkdf2HmacSHA512PasswordEncoder;
+import tikitaka.service.member.adapter.in.web.controller.JwtAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
 	private final String pepper;
 	private final int iterations;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
 	public SecurityConfig(
 			@Value("${PEPPER}") String pepper,
-			@Value("${ITERATIONS}") int iterations
+			@Value("${ITERATIONS}") int iterations,
+			JwtAuthenticationFilter jwtAuthenticationFilter
 	) {
 
 		this.pepper = pepper;
 		this.iterations = iterations;
+		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
 	}
 
 	@Bean
@@ -46,6 +51,7 @@ public class SecurityConfig {
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				)
+				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.authorizeHttpRequests(auth ->
 						auth
 								.requestMatchers(
@@ -56,18 +62,26 @@ public class SecurityConfig {
 
 								.requestMatchers(
 										HttpMethod.POST,
-										"/api/member/register"
+										"/api/member/register",
+										"/api/auth/member/login",
+										"/api/auth/member/logout",
+										"/api/auth/member/refresh"
 								).permitAll()
 
 								.requestMatchers(
 										HttpMethod.POST,
-										"/api/corporation/register"
+										"/api/corporation/register",
+										"/api/auth/corporation/login",
+										"/api/auth/corporation/logout",
+										"/api/auth/corporation/refresh"
 								).permitAll()
 
 								.requestMatchers(
 										HttpMethod.POST,
 										"/api/nts/business/validate"
 								).permitAll()
+
+								.anyRequest().authenticated()
 				);
 
 		return httpSecurity.build();

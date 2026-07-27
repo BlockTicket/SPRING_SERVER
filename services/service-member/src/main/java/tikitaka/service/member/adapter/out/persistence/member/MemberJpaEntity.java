@@ -1,6 +1,7 @@
 package tikitaka.service.member.adapter.out.persistence.member;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import tikitaka.service.member.domain.member.Provider;
@@ -8,6 +9,7 @@ import tikitaka.service.member.domain.member.Provider;
 import java.util.UUID;
 
 @Entity
+@Getter
 @SuperBuilder
 @NoArgsConstructor
 @Table(name = "member")

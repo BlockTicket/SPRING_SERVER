@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.UUID;
+import java.util.Optional;
 
 public interface CorporationJpaRepository extends JpaRepository<CorporationJpaEntity, UUID> {
+
+	Optional<CorporationJpaEntity> findByUsername(String username);
 
 	@Query(value = """
 	SELECT
