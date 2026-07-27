@@ -4,10 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tikitaka.core.common.data.CommonResponse;
@@ -20,6 +20,7 @@ import tikitaka.service.member.application.port.in.auth.LogoutUseCase;
 import tikitaka.service.member.application.port.in.auth.ReissueAccessTokenCommand;
 import tikitaka.service.member.application.port.in.auth.ReissueAccessTokenUseCase;
 import tikitaka.service.member.domain.auth.AccountType;
+import tikitaka.service.member.domain.auth.AuthTokenClaims;
 import tikitaka.service.member.domain.auth.TokenPair;
 import tikitaka.service.member.domain.exception.exception.auth.InvalidTokenException;
 
@@ -27,9 +28,6 @@ import tikitaka.service.member.domain.exception.exception.auth.InvalidTokenExcep
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
-
-	private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
-	private static final String BEARER_PREFIX = "Bearer ";
 
 	private final LoginUseCase loginUseCase;
 	private final LogoutUseCase logoutUseCase;
@@ -54,25 +52,25 @@ public class AuthController {
 
 	@PostMapping("/member/logout")
 	public ResponseEntity<CommonResponse<Void>> logoutMember(
-			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
-			@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
+			@AuthenticationPrincipal AuthTokenClaims accessTokenClaims,
+			@CookieValue(value = RefreshTokenCookieFactory.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
 	) {
 
-		return logout(authorization, refreshToken, AccountType.MEMBER);
+		return logout(accessTokenClaims, refreshToken, AccountType.MEMBER);
 	}
 
 	@PostMapping("/corporation/logout")
 	public ResponseEntity<CommonResponse<Void>> logoutCorporation(
-			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
-			@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
+			@AuthenticationPrincipal AuthTokenClaims accessTokenClaims,
+			@CookieValue(value = RefreshTokenCookieFactory.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
 	) {
 
-		return logout(authorization, refreshToken, AccountType.CORPORATION);
+		return logout(accessTokenClaims, refreshToken, AccountType.CORPORATION);
 	}
 
 	@PostMapping("/member/refresh")
 	public ResponseEntity<CommonResponse<AccessTokenResponse>> reissueMemberAccessToken(
-			@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
+			@CookieValue(value = RefreshTokenCookieFactory.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
 	) {
 
 		return reissueAccessToken(refreshToken, AccountType.MEMBER);
@@ -80,7 +78,7 @@ public class AuthController {
 
 	@PostMapping("/corporation/refresh")
 	public ResponseEntity<CommonResponse<AccessTokenResponse>> reissueCorporationAccessToken(
-			@CookieValue(value = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
+			@CookieValue(value = RefreshTokenCookieFactory.REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken
 	) {
 
 		return reissueAccessToken(refreshToken, AccountType.CORPORATION);
@@ -105,13 +103,15 @@ public class AuthController {
 	}
 
 	private ResponseEntity<CommonResponse<Void>> logout(
-			String authorization,
+			AuthTokenClaims accessTokenClaims,
 			String refreshToken,
 			AccountType accountType
 	) {
 
+		if (accessTokenClaims == null) throw new InvalidTokenException();
+
 		logoutUseCase.logout(new LogoutCommand(
-				extractAccessToken(authorization),
+				accessTokenClaims,
 				refreshToken,
 				accountType
 		));
@@ -134,15 +134,5 @@ public class AuthController {
 
 		return CommonResponse.ok("액세스 토큰이 재발급되었습니다.", new AccessTokenResponse(accessToken))
 				.toResponseEntity();
-	}
-
-	private String extractAccessToken(String authorization) {
-
-		if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
-
-			throw new InvalidTokenException();
-		}
-
-		return authorization.substring(BEARER_PREFIX.length());
 	}
 }

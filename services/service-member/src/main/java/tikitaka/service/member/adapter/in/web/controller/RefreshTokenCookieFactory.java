@@ -8,7 +8,7 @@ import java.time.Duration;
 @Component
 public class RefreshTokenCookieFactory {
 
-	private static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+	public static final String REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
 
 	public ResponseCookie create(
 			String refreshToken,

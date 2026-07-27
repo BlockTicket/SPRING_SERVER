@@ -77,10 +77,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 	@Override
 	public void logout(LogoutCommand logoutCommand) {
 
-		AuthTokenClaims accessTokenClaims = jwtTokenPort.parse(
-				logoutCommand.accessToken(),
-				TokenType.ACCESS
-		);
+		AuthTokenClaims accessTokenClaims = logoutCommand.accessTokenClaims();
 
 		validateAccountType(accessTokenClaims, logoutCommand.accountType());
 

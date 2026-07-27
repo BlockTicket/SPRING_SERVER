@@ -1,9 +1,10 @@
 package tikitaka.service.member.application.port.in.auth;
 
 import tikitaka.service.member.domain.auth.AccountType;
+import tikitaka.service.member.domain.auth.AuthTokenClaims;
 
 public record LogoutCommand(
-		String accessToken,
+		AuthTokenClaims accessTokenClaims,
 		String refreshToken,
 		AccountType accountType
 ) {
