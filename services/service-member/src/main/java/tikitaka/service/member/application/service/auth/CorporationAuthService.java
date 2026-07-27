@@ -49,10 +49,7 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 			throw new InvalidLoginCredentialsException();
 		}
 
-		refreshTokenPort.deleteByAccountIdAndAccountType(
-				authenticationAccount.id(),
-				AccountType.CORPORATION
-		);
+		refreshTokenPort.deleteCorporationByAccountId(authenticationAccount.id());
 
 		TokenPair tokenPair = jwtTokenPort.createTokenPair(
 				authenticationAccount.id(),
@@ -96,10 +93,7 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 			validateCorporationAccountType(refreshTokenClaims);
 		}
 
-		refreshTokenPort.deleteByAccountIdAndAccountType(
-				accessTokenClaims.accountId(),
-				AccountType.CORPORATION
-		);
+		refreshTokenPort.deleteCorporationByAccountId(accessTokenClaims.accountId());
 	}
 
 	@Override

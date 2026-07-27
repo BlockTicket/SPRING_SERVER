@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.auth.RefreshTokenPort;
-import tikitaka.service.member.domain.auth.AccountType;
 import tikitaka.service.member.domain.auth.RefreshToken;
 
 import java.util.Optional;
@@ -44,12 +43,15 @@ public class RefreshTokenPersistenceAdapter implements RefreshTokenPort {
 	}
 
 	@Override
-	public void deleteByAccountIdAndAccountType(
-			UUID accountId,
-			AccountType accountType
-	) {
+	public void deleteMemberByAccountId(UUID accountId) {
 
-		refreshTokenJpaRepository.deleteByAccountIdAndAccountType(accountId, accountType);
+		refreshTokenJpaRepository.deleteMemberByAccountId(accountId);
+	}
+
+	@Override
+	public void deleteCorporationByAccountId(UUID accountId) {
+
+		refreshTokenJpaRepository.deleteCorporationByAccountId(accountId);
 	}
 
 	private RefreshToken toRefreshToken(RefreshTokenJpaEntity refreshTokenJpaEntity) {

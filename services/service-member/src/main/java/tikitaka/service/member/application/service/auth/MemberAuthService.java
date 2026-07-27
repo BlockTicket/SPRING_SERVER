@@ -49,10 +49,7 @@ public class MemberAuthService implements MemberLoginUseCase, MemberLogoutUseCas
 			throw new InvalidLoginCredentialsException();
 		}
 
-		refreshTokenPort.deleteByAccountIdAndAccountType(
-				authenticationAccount.id(),
-				AccountType.MEMBER
-		);
+		refreshTokenPort.deleteMemberByAccountId(authenticationAccount.id());
 
 		TokenPair tokenPair = jwtTokenPort.createTokenPair(
 				authenticationAccount.id(),
@@ -96,10 +93,7 @@ public class MemberAuthService implements MemberLoginUseCase, MemberLogoutUseCas
 			validateMemberAccountType(refreshTokenClaims);
 		}
 
-		refreshTokenPort.deleteByAccountIdAndAccountType(
-				accessTokenClaims.accountId(),
-				AccountType.MEMBER
-		);
+		refreshTokenPort.deleteMemberByAccountId(accessTokenClaims.accountId());
 	}
 
 	@Override
