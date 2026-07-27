@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,13 +12,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tikitaka.core.security.config.Pbkdf2HmacSHA512PasswordEncoder;
 import tikitaka.service.member.adapter.in.web.filter.JwtAuthenticationFilter;
-import tikitaka.service.member.adapter.in.web.handler.JwtAuthenticationEntryPoint;
 
 @Configuration
 @EnableConfigurationProperties(JwtProperties.class)
@@ -44,8 +45,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(
 			HttpSecurity httpSecurity,
-			JwtAuthenticationFilter jwtAuthenticationFilter,
-			JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint
+			JwtAuthenticationFilter jwtAuthenticationFilter
 	) {
 
 		httpSecurity
@@ -56,6 +56,12 @@ public class SecurityConfig {
 				)
 				.authorizeHttpRequests(auth ->
 						auth
+								.requestMatchers(
+										HttpMethod.GET,
+										"/swagger-ui/**",
+										"/v3/api-docs/**"
+								).permitAll()
+
 								.requestMatchers(
 										HttpMethod.POST,
 										"/api/member/register"
@@ -82,7 +88,9 @@ public class SecurityConfig {
 								.anyRequest().authenticated()
 				)
 				.exceptionHandling(exception ->
-						exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+						exception.authenticationEntryPoint(
+								new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+						)
 				)
 				.addFilterBefore(
 						jwtAuthenticationFilter,

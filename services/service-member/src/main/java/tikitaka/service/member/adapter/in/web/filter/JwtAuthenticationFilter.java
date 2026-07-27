@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tikitaka.service.member.adapter.in.web.handler.JwtAuthenticationEntryPoint;
 import tikitaka.service.member.adapter.in.web.security.TokenHeaders;
 import tikitaka.service.member.application.port.out.auth.JwtPort;
 
@@ -31,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	);
 
 	private final JwtPort jwtPort;
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -60,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (!TokenHeaders.hasBearerPrefix(authorizationHeader)) {
 
-			jwtAuthenticationEntryPoint.commence(request, response, null);
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
@@ -68,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		if (accessToken.isBlank() || !jwtPort.validateAccessToken(accessToken)) {
 
-			jwtAuthenticationEntryPoint.commence(request, response, null);
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 
