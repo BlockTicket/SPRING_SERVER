@@ -11,10 +11,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tikitaka.core.security.config.Pbkdf2HmacSHA512PasswordEncoder;
+import tikitaka.service.member.adapter.in.web.filter.JwtAuthenticationFilter;
+import tikitaka.service.member.adapter.in.web.handler.JwtAuthenticationEntryPoint;
 
 @Configuration
 @EnableConfigurationProperties(JwtProperties.class)
@@ -40,7 +43,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(
-			HttpSecurity httpSecurity
+			HttpSecurity httpSecurity,
+			JwtAuthenticationFilter jwtAuthenticationFilter,
+			JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint
 	) {
 
 		httpSecurity
@@ -51,12 +56,6 @@ public class SecurityConfig {
 				)
 				.authorizeHttpRequests(auth ->
 						auth
-								.requestMatchers(
-										HttpMethod.GET,
-										"/swagger-ui/**",
-										"/v3/api-docs/**"
-								).permitAll()
-
 								.requestMatchers(
 										HttpMethod.POST,
 										"/api/member/register"
@@ -77,10 +76,17 @@ public class SecurityConfig {
 										"/api/auth/member/signin",
 										"/api/auth/corporation/signin",
 										"/api/auth/member/refresh",
-										"/api/auth/corporation/refresh",
-										"/api/auth/member/logout",
-										"/api/auth/corporation/logout"
+										"/api/auth/corporation/refresh"
 								).permitAll()
+
+								.anyRequest().authenticated()
+				)
+				.exceptionHandling(exception ->
+						exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+				)
+				.addFilterBefore(
+						jwtAuthenticationFilter,
+						UsernamePasswordAuthenticationFilter.class
 				);
 
 		return httpSecurity.build();

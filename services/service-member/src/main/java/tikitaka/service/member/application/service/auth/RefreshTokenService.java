@@ -101,7 +101,7 @@ public class RefreshTokenService implements
 			MemberLogoutCommand memberLogoutCommand
 	) {
 
-		UUID memberId = getAccessTokenMemberId(memberLogoutCommand.accessToken());
+		UUID memberId = memberLogoutCommand.memberId();
 
 		if (loadMemberRefreshTokenPort.loadMemberRefreshTokenByMemberId(memberId).isEmpty()) {
 
@@ -116,7 +116,7 @@ public class RefreshTokenService implements
 			CorporationLogoutCommand corporationLogoutCommand
 	) {
 
-		UUID corporationId = getAccessTokenMemberId(corporationLogoutCommand.accessToken());
+		UUID corporationId = corporationLogoutCommand.corporationId();
 
 		if (loadCorporationRefreshTokenPort.loadCorporationRefreshTokenByCorporationId(corporationId).isEmpty()) {
 
@@ -134,16 +134,6 @@ public class RefreshTokenService implements
 		}
 
 		return jwtPort.getMemberId(refreshToken);
-	}
-
-	private UUID getAccessTokenMemberId(String accessToken) {
-
-		if (!jwtPort.validateAccessToken(accessToken)) {
-
-			throw new InvalidAccessTokenException();
-		}
-
-		return jwtPort.getMemberId(accessToken);
 	}
 
 	private void validateMemberRefreshToken(
