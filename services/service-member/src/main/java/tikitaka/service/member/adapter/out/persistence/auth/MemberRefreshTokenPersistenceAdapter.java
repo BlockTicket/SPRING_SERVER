@@ -12,14 +12,12 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class MemberRefreshTokenPersistenceAdapter implements
         SaveMemberRefreshTokenPort,
         LoadMemberRefreshTokenPort {
 
-
     private final MemberRefreshTokenJpaRepository memberRefreshTokenJpaRepository;
-
 
     @Override
     public void saveMemberRefreshToken(
@@ -35,27 +33,20 @@ public class MemberRefreshTokenPersistenceAdapter implements
         );
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public MemberRefreshToken loadMemberRefreshTokenByMemberId(
             UUID memberId
     ) {
 
-        MemberRefreshTokenJpaEntity entity =
-                memberRefreshTokenJpaRepository.findById(memberId)
-                        .orElseThrow(
-                                InvalidRefreshTokenException::new
-                        );
-
-
-        return new MemberRefreshToken(
-                entity.getMemberId(),
-                entity.getRefreshToken(),
-                entity.getExpiredAt()
-        );
+        return memberRefreshTokenJpaRepository.findById(memberId)
+                .map(entity -> new MemberRefreshToken(
+                        entity.getMemberId(),
+                        entity.getRefreshToken(),
+                        entity.getExpiredAt()
+                ))
+                .orElse(null);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -64,16 +55,11 @@ public class MemberRefreshTokenPersistenceAdapter implements
     ) {
 
         MemberRefreshTokenJpaEntity entity =
-                memberRefreshTokenJpaRepository.findByRefreshToken(
-                        refreshToken
-                );
+                memberRefreshTokenJpaRepository.findByRefreshToken(refreshToken);
 
-
-        if(entity == null) {
-
+        if (entity == null) {
             throw new InvalidRefreshTokenException();
         }
-
 
         return new MemberRefreshToken(
                 entity.getMemberId(),

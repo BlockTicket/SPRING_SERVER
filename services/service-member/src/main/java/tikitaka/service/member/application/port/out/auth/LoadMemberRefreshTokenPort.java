@@ -10,7 +10,6 @@ public interface LoadMemberRefreshTokenPort {
             UUID memberId
     );
 
-
     MemberRefreshToken loadMemberRefreshToken(
             String refreshToken
     );

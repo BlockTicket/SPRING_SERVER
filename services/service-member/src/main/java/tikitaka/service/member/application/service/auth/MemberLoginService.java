@@ -81,48 +81,36 @@ public class MemberLoginService implements LoginMemberUseCase {
 	}
 
 
-	private String createOrLoadRefreshToken(
-			Member member
-	) {
+    private String createOrLoadRefreshToken(
+            Member member
+    ) {
 
+        MemberRefreshToken savedToken =
+                loadMemberRefreshTokenPort
+                        .loadMemberRefreshTokenByMemberId(
+                                member.getId()
+                        );
 
-		try {
+        if (savedToken != null &&
+                savedToken.getExpiredAt().isAfter(LocalDateTime.now())) {
 
-			MemberRefreshToken savedToken =
-					loadMemberRefreshTokenPort
-							.loadMemberRefreshTokenByMemberId(
-									member.getId()
-							);
+            return savedToken.getRefreshToken();
+        }
 
+        String refreshToken =
+                jwtPort.createRefreshToken(
+                        member.getId(),
+                        "MEMBER"
+                );
 
-			if(savedToken.getExpiredAt()
-					.isAfter(LocalDateTime.now())) {
+        saveMemberRefreshTokenPort.saveMemberRefreshToken(
+                new MemberRefreshToken(
+                        member.getId(),
+                        refreshToken,
+                        LocalDateTime.now().plusDays(30)
+                )
+        );
 
-				return savedToken.getRefreshToken();
-			}
-
-
-		} catch (Exception ignored) {
-
-		}
-
-
-		String refreshToken =
-				jwtPort.createRefreshToken(
-						member.getId(),
-						"MEMBER"
-				);
-
-
-		saveMemberRefreshTokenPort.saveMemberRefreshToken(
-				new MemberRefreshToken(
-						member.getId(),
-						refreshToken,
-						LocalDateTime.now().plusDays(30)
-				)
-		);
-
-
-		return refreshToken;
-	}
+        return refreshToken;
+    }
 }
