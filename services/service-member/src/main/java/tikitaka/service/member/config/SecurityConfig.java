@@ -1,6 +1,7 @@
 package tikitaka.service.member.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.CorsFilter;
 import tikitaka.core.security.config.Pbkdf2HmacSHA512PasswordEncoder;
 
 @Configuration
+@EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 
 	private final String pepper;
@@ -67,6 +69,16 @@ public class SecurityConfig {
 								.requestMatchers(
 										HttpMethod.POST,
 										"/api/nts/business/validate"
+								).permitAll()
+
+								.requestMatchers(
+										HttpMethod.POST,
+										"/api/auth/member/signin",
+										"/api/auth/corporation/signin",
+										"/api/auth/member/refresh",
+										"/api/auth/corporation/refresh",
+										"/api/auth/member/logout",
+										"/api/auth/corporation/logout"
 								).permitAll()
 				);
 
