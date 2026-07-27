@@ -1,6 +1,7 @@
 package tikitaka.service.member.adapter.out.persistence.member;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -19,6 +20,7 @@ public class MemberJpaEntity {
 	private UUID id;
 
 	@Setter
+	@Getter
 	@Column(unique = true, length = 50, nullable = false)
 	private String username;
 

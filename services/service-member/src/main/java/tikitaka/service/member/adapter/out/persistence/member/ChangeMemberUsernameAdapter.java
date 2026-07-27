@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.member.ChangeMemberUsernamePort;
 import tikitaka.service.member.domain.exception.exception.member.MemberNotFoundException;
+import tikitaka.service.member.domain.exception.exception.member.SameAsCurrentUsername;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 
 import java.util.UUID;
@@ -22,14 +23,16 @@ public class ChangeMemberUsernameAdapter implements ChangeMemberUsernamePort {
 			String newUsername
 	) {
 
-		MemberJpaEntity member = memberJpaRepository.findById(id)
+		MemberJpaEntity memberJpaEntity = memberJpaRepository.findById(id)
 				.orElseThrow(MemberNotFoundException::new);
+
+		if (memberJpaEntity.getUsername().equals(newUsername)) { throw new SameAsCurrentUsername(); }
 
 		if (memberJpaRepository.existsByUsernameAndIdNot(newUsername, id)) {
 
 			throw new UsernameAlreadyExistException();
 		}
 
-		member.setUsername(newUsername);
+		memberJpaEntity.setUsername(newUsername);
 	}
 }
