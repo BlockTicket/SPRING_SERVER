@@ -1,26 +1,25 @@
 package tikitaka.service.member.application.port.out.auth;
 
-import tikitaka.service.member.domain.auth.AccountType;
 import tikitaka.service.member.domain.auth.AuthTokenClaims;
 import tikitaka.service.member.domain.auth.TokenPair;
-import tikitaka.service.member.domain.auth.TokenType;
 
 import java.util.UUID;
 
 public interface JwtTokenPort {
 
-	TokenPair createTokenPair(
-			UUID accountId,
-			AccountType accountType
-	);
+	TokenPair createMemberTokenPair(UUID accountId);
 
-	String createAccessToken(
-			UUID accountId,
-			AccountType accountType
-	);
+	TokenPair createCorporationTokenPair(UUID accountId);
 
-	AuthTokenClaims parse(
-			String token,
-			TokenType expectedTokenType
-	);
+	String createMemberAccessToken(UUID accountId);
+
+	String createCorporationAccessToken(UUID accountId);
+
+	AuthTokenClaims parseAccessToken(String token);
+
+	AuthTokenClaims parseRefreshToken(String token);
+
+	void validateMemberClaims(AuthTokenClaims authTokenClaims);
+
+	void validateCorporationClaims(AuthTokenClaims authTokenClaims);
 }

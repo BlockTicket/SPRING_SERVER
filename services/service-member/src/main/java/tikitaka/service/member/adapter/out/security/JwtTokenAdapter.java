@@ -45,29 +45,62 @@ public class JwtTokenAdapter implements JwtTokenPort {
 	}
 
 	@Override
-	public TokenPair createTokenPair(
-			UUID accountId,
-			AccountType accountType
-	) {
+	public TokenPair createMemberTokenPair(UUID accountId) {
 
 		return new TokenPair(
-				createToken(accountId, accountType, TokenType.ACCESS, accessTokenExpiration),
-				createToken(accountId, accountType, TokenType.REFRESH, refreshTokenExpiration),
+				createToken(accountId, AccountType.MEMBER, TokenType.ACCESS, accessTokenExpiration),
+				createToken(accountId, AccountType.MEMBER, TokenType.REFRESH, refreshTokenExpiration),
 				refreshTokenExpiration.toSeconds()
 		);
 	}
 
 	@Override
-	public String createAccessToken(
-			UUID accountId,
-			AccountType accountType
-	) {
+	public TokenPair createCorporationTokenPair(UUID accountId) {
 
-		return createToken(accountId, accountType, TokenType.ACCESS, accessTokenExpiration);
+		return new TokenPair(
+				createToken(accountId, AccountType.CORPORATION, TokenType.ACCESS, accessTokenExpiration),
+				createToken(accountId, AccountType.CORPORATION, TokenType.REFRESH, refreshTokenExpiration),
+				refreshTokenExpiration.toSeconds()
+		);
 	}
 
 	@Override
-	public AuthTokenClaims parse(
+	public String createMemberAccessToken(UUID accountId) {
+
+		return createToken(accountId, AccountType.MEMBER, TokenType.ACCESS, accessTokenExpiration);
+	}
+
+	@Override
+	public String createCorporationAccessToken(UUID accountId) {
+
+		return createToken(accountId, AccountType.CORPORATION, TokenType.ACCESS, accessTokenExpiration);
+	}
+
+	@Override
+	public AuthTokenClaims parseAccessToken(String token) {
+
+		return parse(token, TokenType.ACCESS);
+	}
+
+	@Override
+	public AuthTokenClaims parseRefreshToken(String token) {
+
+		return parse(token, TokenType.REFRESH);
+	}
+
+	@Override
+	public void validateMemberClaims(AuthTokenClaims authTokenClaims) {
+
+		if (authTokenClaims.accountType() != AccountType.MEMBER) throw new InvalidTokenTypeException();
+	}
+
+	@Override
+	public void validateCorporationClaims(AuthTokenClaims authTokenClaims) {
+
+		if (authTokenClaims.accountType() != AccountType.CORPORATION) throw new InvalidTokenTypeException();
+	}
+
+	private AuthTokenClaims parse(
 			String token,
 			TokenType expectedTokenType
 	) {

@@ -13,7 +13,6 @@ import tikitaka.core.common.exception.CommonException;
 import tikitaka.service.member.application.port.out.auth.InvalidAccessTokenPort;
 import tikitaka.service.member.application.port.out.auth.JwtTokenPort;
 import tikitaka.service.member.domain.auth.AuthTokenClaims;
-import tikitaka.service.member.domain.auth.TokenType;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,9 +40,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			try {
 
-				AuthTokenClaims authTokenClaims = jwtTokenPort.parse(
-						authorization.substring(BEARER_PREFIX.length()),
-						TokenType.ACCESS
+				AuthTokenClaims authTokenClaims = jwtTokenPort.parseAccessToken(
+						authorization.substring(BEARER_PREFIX.length())
 				);
 
 				if (!invalidAccessTokenPort.isInvalidated(authTokenClaims.tokenId())) {

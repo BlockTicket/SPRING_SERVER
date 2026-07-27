@@ -14,16 +14,13 @@ import tikitaka.service.member.application.port.out.auth.AuthenticationAccountPo
 import tikitaka.service.member.application.port.out.auth.InvalidAccessTokenPort;
 import tikitaka.service.member.application.port.out.auth.JwtTokenPort;
 import tikitaka.service.member.application.port.out.auth.RefreshTokenPort;
-import tikitaka.service.member.domain.auth.AccountType;
 import tikitaka.service.member.domain.auth.AuthTokenClaims;
 import tikitaka.service.member.domain.auth.AuthenticationAccount;
 import tikitaka.service.member.domain.auth.InvalidAccessToken;
 import tikitaka.service.member.domain.auth.RefreshToken;
 import tikitaka.service.member.domain.auth.TokenPair;
-import tikitaka.service.member.domain.auth.TokenType;
 import tikitaka.service.member.domain.exception.exception.auth.InvalidLoginCredentialsException;
 import tikitaka.service.member.domain.exception.exception.auth.InvalidTokenException;
-import tikitaka.service.member.domain.exception.exception.auth.InvalidTokenTypeException;
 
 @Service
 @RequiredArgsConstructor
@@ -51,14 +48,8 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 
 		refreshTokenPort.deleteCorporationByAccountId(authenticationAccount.id());
 
-		TokenPair tokenPair = jwtTokenPort.createTokenPair(
-				authenticationAccount.id(),
-				AccountType.CORPORATION
-		);
-		AuthTokenClaims refreshTokenClaims = jwtTokenPort.parse(
-				tokenPair.refreshToken(),
-				TokenType.REFRESH
-		);
+		TokenPair tokenPair = jwtTokenPort.createCorporationTokenPair(authenticationAccount.id());
+		AuthTokenClaims refreshTokenClaims = jwtTokenPort.parseRefreshToken(tokenPair.refreshToken());
 
 		refreshTokenPort.save(new RefreshToken(
 				refreshTokenClaims.tokenId(),
@@ -75,7 +66,7 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 
 		AuthTokenClaims accessTokenClaims = logoutCommand.accessTokenClaims();
 
-		validateCorporationAccountType(accessTokenClaims);
+		jwtTokenPort.validateCorporationClaims(accessTokenClaims);
 
 		invalidAccessTokenPort.save(new InvalidAccessToken(
 				accessTokenClaims.tokenId(),
@@ -84,13 +75,10 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 
 		if (logoutCommand.refreshToken() != null && !logoutCommand.refreshToken().isBlank()) {
 
-			AuthTokenClaims refreshTokenClaims = jwtTokenPort.parse(
-					logoutCommand.refreshToken(),
-					TokenType.REFRESH
-			);
+			AuthTokenClaims refreshTokenClaims = jwtTokenPort.parseRefreshToken(logoutCommand.refreshToken());
 
 			validateSameAccount(accessTokenClaims, refreshTokenClaims);
-			validateCorporationAccountType(refreshTokenClaims);
+			jwtTokenPort.validateCorporationClaims(refreshTokenClaims);
 		}
 
 		refreshTokenPort.deleteCorporationByAccountId(accessTokenClaims.accountId());
@@ -100,12 +88,8 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 	@Transactional(readOnly = true)
 	public String reissueAccessToken(ReissueAccessTokenCommand reissueAccessTokenCommand) {
 
-		AuthTokenClaims refreshTokenClaims = jwtTokenPort.parse(
-				reissueAccessTokenCommand.refreshToken(),
-				TokenType.REFRESH
-		);
-
-		validateCorporationAccountType(refreshTokenClaims);
+		AuthTokenClaims refreshTokenClaims = jwtTokenPort.parseRefreshToken(reissueAccessTokenCommand.refreshToken());
+		jwtTokenPort.validateCorporationClaims(refreshTokenClaims);
 
 		RefreshToken refreshToken = refreshTokenPort.findByTokenId(refreshTokenClaims.tokenId())
 				.orElseThrow(InvalidTokenException::new);
@@ -117,15 +101,7 @@ public class CorporationAuthService implements CorporationLoginUseCase, Corporat
 			throw new InvalidTokenException();
 		}
 
-		return jwtTokenPort.createAccessToken(
-				refreshTokenClaims.accountId(),
-				AccountType.CORPORATION
-		);
-	}
-
-	private void validateCorporationAccountType(AuthTokenClaims authTokenClaims) {
-
-		if (authTokenClaims.accountType() != AccountType.CORPORATION) throw new InvalidTokenTypeException();
+		return jwtTokenPort.createCorporationAccessToken(refreshTokenClaims.accountId());
 	}
 
 	private void validateSameAccount(
