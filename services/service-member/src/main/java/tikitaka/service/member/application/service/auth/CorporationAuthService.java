@@ -5,18 +5,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.in.auth.LoginCommand;
-import tikitaka.service.member.application.port.in.auth.LoginUseCase;
 import tikitaka.service.member.application.port.in.auth.LogoutCommand;
-import tikitaka.service.member.application.port.in.auth.LogoutUseCase;
 import tikitaka.service.member.application.port.in.auth.ReissueAccessTokenCommand;
-import tikitaka.service.member.application.port.in.auth.ReissueAccessTokenUseCase;
+import tikitaka.service.member.application.port.in.auth.corporation.CorporationLoginUseCase;
+import tikitaka.service.member.application.port.in.auth.corporation.CorporationLogoutUseCase;
+import tikitaka.service.member.application.port.in.auth.corporation.CorporationReissueAccessTokenUseCase;
 import tikitaka.service.member.application.port.out.auth.AuthenticationAccountPort;
 import tikitaka.service.member.application.port.out.auth.InvalidAccessTokenPort;
 import tikitaka.service.member.application.port.out.auth.JwtTokenPort;
 import tikitaka.service.member.application.port.out.auth.RefreshTokenPort;
+import tikitaka.service.member.domain.auth.AccountType;
 import tikitaka.service.member.domain.auth.AuthTokenClaims;
 import tikitaka.service.member.domain.auth.AuthenticationAccount;
-import tikitaka.service.member.domain.auth.AccountType;
 import tikitaka.service.member.domain.auth.InvalidAccessToken;
 import tikitaka.service.member.domain.auth.RefreshToken;
 import tikitaka.service.member.domain.auth.TokenPair;
@@ -28,7 +28,7 @@ import tikitaka.service.member.domain.exception.exception.auth.InvalidTokenTypeE
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTokenUseCase {
+public class CorporationAuthService implements CorporationLoginUseCase, CorporationLogoutUseCase, CorporationReissueAccessTokenUseCase {
 
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationAccountPort authenticationAccountPort;
@@ -39,9 +39,8 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 	@Override
 	public TokenPair login(LoginCommand loginCommand) {
 
-		AuthenticationAccount authenticationAccount = authenticationAccountPort.findByUsername(
-					loginCommand.username(),
-					loginCommand.accountType()
+		AuthenticationAccount authenticationAccount = authenticationAccountPort.findCorporationByUsername(
+					loginCommand.username()
 				)
 				.orElseThrow(InvalidLoginCredentialsException::new);
 
@@ -52,12 +51,12 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 
 		refreshTokenPort.deleteByAccountIdAndAccountType(
 				authenticationAccount.id(),
-			authenticationAccount.accountType()
+				AccountType.CORPORATION
 		);
 
 		TokenPair tokenPair = jwtTokenPort.createTokenPair(
 				authenticationAccount.id(),
-				authenticationAccount.accountType()
+				AccountType.CORPORATION
 		);
 		AuthTokenClaims refreshTokenClaims = jwtTokenPort.parse(
 				tokenPair.refreshToken(),
@@ -79,7 +78,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 
 		AuthTokenClaims accessTokenClaims = logoutCommand.accessTokenClaims();
 
-		validateAccountType(accessTokenClaims, logoutCommand.accountType());
+		validateCorporationAccountType(accessTokenClaims);
 
 		invalidAccessTokenPort.save(new InvalidAccessToken(
 				accessTokenClaims.tokenId(),
@@ -94,11 +93,12 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 			);
 
 			validateSameAccount(accessTokenClaims, refreshTokenClaims);
+			validateCorporationAccountType(refreshTokenClaims);
 		}
 
 		refreshTokenPort.deleteByAccountIdAndAccountType(
 				accessTokenClaims.accountId(),
-				accessTokenClaims.accountType()
+				AccountType.CORPORATION
 		);
 	}
 
@@ -111,7 +111,7 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 				TokenType.REFRESH
 		);
 
-		validateAccountType(refreshTokenClaims, reissueAccessTokenCommand.accountType());
+		validateCorporationAccountType(refreshTokenClaims);
 
 		RefreshToken refreshToken = refreshTokenPort.findByTokenId(refreshTokenClaims.tokenId())
 				.orElseThrow(InvalidTokenException::new);
@@ -125,16 +125,13 @@ public class AuthService implements LoginUseCase, LogoutUseCase, ReissueAccessTo
 
 		return jwtTokenPort.createAccessToken(
 				refreshTokenClaims.accountId(),
-				refreshTokenClaims.accountType()
+				AccountType.CORPORATION
 		);
 	}
 
-	private void validateAccountType(
-			AuthTokenClaims authTokenClaims,
-			AccountType accountType
-	) {
+	private void validateCorporationAccountType(AuthTokenClaims authTokenClaims) {
 
-		if (authTokenClaims.accountType() != accountType) throw new InvalidTokenTypeException();
+		if (authTokenClaims.accountType() != AccountType.CORPORATION) throw new InvalidTokenTypeException();
 	}
 
 	private void validateSameAccount(

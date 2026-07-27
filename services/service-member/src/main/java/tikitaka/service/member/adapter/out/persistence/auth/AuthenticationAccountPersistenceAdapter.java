@@ -20,17 +20,17 @@ public class AuthenticationAccountPersistenceAdapter implements AuthenticationAc
 	private final CorporationJpaRepository corporationJpaRepository;
 
 	@Override
-	public Optional<AuthenticationAccount> findByUsername(
-			String username,
-			AccountType accountType
-	) {
+	public Optional<AuthenticationAccount> findMemberByUsername(String username) {
 
-		return switch (accountType) {
-			case MEMBER -> memberJpaRepository.findByUsername(username)
-					.map(this::toMemberAuthenticationAccount);
-			case CORPORATION -> corporationJpaRepository.findByUsername(username)
-					.map(this::toCorporationAuthenticationAccount);
-		};
+		return memberJpaRepository.findByUsername(username)
+				.map(this::toMemberAuthenticationAccount);
+	}
+
+	@Override
+	public Optional<AuthenticationAccount> findCorporationByUsername(String username) {
+
+		return corporationJpaRepository.findByUsername(username)
+				.map(this::toCorporationAuthenticationAccount);
 	}
 
 	private AuthenticationAccount toMemberAuthenticationAccount(
