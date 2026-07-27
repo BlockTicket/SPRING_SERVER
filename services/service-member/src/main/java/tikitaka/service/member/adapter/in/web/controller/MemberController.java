@@ -3,10 +3,7 @@ package tikitaka.service.member.adapter.in.web.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tikitaka.core.common.data.CommonResponse;
 import tikitaka.service.member.adapter.in.web.data.request.corporation.ChangeCorporationUsernameRequest;
 import tikitaka.service.member.adapter.in.web.data.request.corporation.RegisterCorporationRequest;
@@ -53,7 +50,7 @@ public class MemberController {
 	}
 
 	// 사용자명 변경
-	@PostMapping("/member/username")
+	@PatchMapping("/member/username")
 	public ResponseEntity<CommonResponse<Void>> changeMemberUsername(
 			@Valid @RequestBody ChangeMemberUsernameRequest changeMemberUsernameRequest
 	) {
@@ -65,7 +62,7 @@ public class MemberController {
 		return CommonResponse.ok("사용자명이 변경되었습니다.").toResponseEntity();
 	}
 
-	@PostMapping("/corporation/username")
+	@PatchMapping("/corporation/username")
 	public ResponseEntity<CommonResponse<Void>> changeCorporationUsername(
 			@Valid @RequestBody ChangeCorporationUsernameRequest changeCorporationUsernameRequest
 	) {
