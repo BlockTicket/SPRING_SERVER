@@ -28,4 +28,6 @@ public interface MemberJpaRepository extends JpaRepository<MemberJpaEntity, UUID
 			@Param("email") String email,
 			@Param("phone") String phone
 	);
+
+	boolean existsByUsernameAndIdNot(String newUsername, UUID id);
 }

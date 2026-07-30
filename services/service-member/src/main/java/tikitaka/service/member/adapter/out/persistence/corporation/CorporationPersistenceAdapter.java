@@ -13,7 +13,7 @@ import tikitaka.service.member.domain.exception.exception.member.UsernameAlready
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class CorporationPortPersistenceAdapter implements SaveCorporationPort {
+public class CorporationPersistenceAdapter implements SaveCorporationPort {
 
 	private final PasswordEncoder passwordEncoder;
 	private final CorporationJpaRepository corporationJpaRepository;

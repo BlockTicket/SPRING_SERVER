@@ -28,4 +28,6 @@ public interface CorporationJpaRepository extends JpaRepository<CorporationJpaEn
 			@Param("email") String email,
 			@Param("phone") String phone
 	);
+
+	boolean existsByUsernameAndIdNot(String username, UUID id);
 }

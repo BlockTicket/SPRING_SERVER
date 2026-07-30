@@ -56,17 +56,19 @@ public class SecurityConfig {
 
 								.requestMatchers(
 										HttpMethod.POST,
-										"/api/member/register"
-								).permitAll()
-
-								.requestMatchers(
-										HttpMethod.POST,
+										"/api/member/register",
 										"/api/corporation/register"
 								).permitAll()
 
 								.requestMatchers(
-										HttpMethod.POST,
-										"/api/nts/business/validate"
+										HttpMethod.PATCH,
+										"/api/member/username",
+										"/api/corporation/username"
+								).permitAll()
+
+								.requestMatchers(
+										HttpMethod.GET,
+										"/health"
 								).permitAll()
 				);
 

@@ -9,7 +9,7 @@ import tikitaka.service.member.domain.member.Member;
 
 @Service
 @RequiredArgsConstructor
-public class MemberCommandService implements RegisterMemberUseCase {
+public class MemberRegisterService implements RegisterMemberUseCase {
 
 	private final SaveMemberPort saveMemberPort;
 

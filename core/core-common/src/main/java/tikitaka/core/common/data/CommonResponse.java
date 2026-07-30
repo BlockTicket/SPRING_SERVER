@@ -53,6 +53,18 @@ public record CommonResponse<T>(
 		);
 	}
 
+	public static <T> CommonResponse<T> health(
+			T data
+	) {
+
+		return CommonResponse.of(
+				HttpStatus.OK,
+				null,
+				null,
+				data
+		);
+	}
+
 	public static CommonResponse<Void> error(
 			CommonException commonException
 	) {
