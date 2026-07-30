@@ -26,7 +26,7 @@ public class ChangeMemberUsernameAdapter implements ChangeMemberUsernamePort {
 		MemberJpaEntity memberJpaEntity = memberJpaRepository.findById(id)
 				.orElseThrow(MemberNotFoundException::new);
 
-		if (memberJpaEntity.getUsername().equals(newUsername)) { throw new SameAsCurrentUsername(); }
+		if (memberJpaEntity.getUsername().equals(newUsername)) throw new SameAsCurrentUsername();
 
 		if (memberJpaRepository.existsByUsernameAndIdNot(newUsername, id)) {
 

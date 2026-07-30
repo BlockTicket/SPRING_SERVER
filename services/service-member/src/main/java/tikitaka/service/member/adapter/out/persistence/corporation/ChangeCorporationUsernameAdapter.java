@@ -26,7 +26,7 @@ public class ChangeCorporationUsernameAdapter implements ChangeCorporationUserna
 		CorporationJpaEntity corporationJpaEntity = corporationJpaRepository.findById(id)
 				.orElseThrow(MemberNotFoundException::new);
 
-		if (corporationJpaEntity.getUsername().equals(newUsername)) { throw new SameAsCurrentUsername(); }
+		if (corporationJpaEntity.getUsername().equals(newUsername)) throw new SameAsCurrentUsername();
 
 		if (corporationJpaRepository.existsByUsernameAndIdNot(newUsername, id)) {
 

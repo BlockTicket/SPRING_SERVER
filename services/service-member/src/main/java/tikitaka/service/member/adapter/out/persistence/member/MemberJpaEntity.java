@@ -31,7 +31,7 @@ public class MemberJpaEntity {
 	private String phone;
 
 	@Setter
-	@Column(length = 600)
+	@Column(length = 255)
 	private String password;
 
 	@Enumerated(EnumType.STRING)

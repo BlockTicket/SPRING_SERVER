@@ -29,7 +29,7 @@ public class CorporationJpaEntity {
 	private String phone;
 
 	@Setter
-	@Column(length = 600, nullable = false)
+	@Column(length = 255, nullable = false)
 	private String password;
 
 	@OneToOne(mappedBy = "corporationJpaEntity")

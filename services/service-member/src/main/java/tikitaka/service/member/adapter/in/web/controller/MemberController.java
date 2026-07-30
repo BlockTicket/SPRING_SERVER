@@ -14,6 +14,8 @@ import tikitaka.service.member.application.port.in.corporation.RegisterCorporati
 import tikitaka.service.member.application.port.in.member.ChangeMemberUsernameUseCase;
 import tikitaka.service.member.application.port.in.member.RegisterMemberUseCase;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -23,6 +25,13 @@ public class MemberController {
 	private final RegisterCorporationUseCase registerCorporationUseCase;
 	private final ChangeMemberUsernameUseCase changeMemberUsernameUseCase;
 	private final ChangeCorporationUsernameUseCase changeCorporationUsernameUseCase;
+
+	// 상태확인
+	@GetMapping("/health")
+	public ResponseEntity<CommonResponse<Map<String, Boolean>>> health() {
+
+		return CommonResponse.health(Map.of("health", true)).toResponseEntity();
+	}
 
 	// 회원가입
 	@PostMapping("/member/register")
