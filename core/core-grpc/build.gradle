@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+dependencies {
+    api project(':core:core-common')
+
+    api 'io.grpc:grpc-netty-shaded'
+    api 'io.grpc:grpc-protobuf'
+    api 'io.grpc:grpc-stub'
+    api 'com.google.protobuf:protobuf-java'
+
+    api 'org.springframework.grpc:spring-grpc-core'
+
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${dependencyManagement.managedVersions['com.google.protobuf:protobuf-java']}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${dependencyManagement.managedVersions['io.grpc:grpc-core']}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
