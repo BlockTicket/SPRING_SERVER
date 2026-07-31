@@ -63,9 +63,10 @@ public class SecurityConfig {
 								.requestMatchers(
 										HttpMethod.PATCH,
 										"/api/member/username",
+										"/api/member/password",
 										"/api/corporation/username",
-										"/api/member/password"
-								).permitAll()
+										"/api/corporation/password"
+										).permitAll()
 
 								.requestMatchers(
 										HttpMethod.GET,

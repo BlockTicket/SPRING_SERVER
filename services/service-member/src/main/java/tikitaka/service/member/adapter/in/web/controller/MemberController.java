@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tikitaka.core.common.data.CommonResponse;
+import tikitaka.service.member.adapter.in.web.data.request.corporation.ChangeCorporationPasswordRequest;
 import tikitaka.service.member.adapter.in.web.data.request.corporation.ChangeCorporationUsernameRequest;
 import tikitaka.service.member.adapter.in.web.data.request.corporation.RegisterCorporationRequest;
 import tikitaka.service.member.adapter.in.web.data.request.member.ChangeMemberPasswordRequest;
 import tikitaka.service.member.adapter.in.web.data.request.member.ChangeMemberUsernameRequest;
 import tikitaka.service.member.adapter.in.web.data.request.member.RegisterMemberRequest;
+import tikitaka.service.member.application.port.in.corporation.ChangeCorporationPasswordUseCase;
 import tikitaka.service.member.application.port.in.corporation.ChangeCorporationUsernameUseCase;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationUseCase;
 import tikitaka.service.member.application.port.in.member.ChangeMemberPasswordUseCase;
@@ -28,6 +30,7 @@ public class MemberController {
 	private final ChangeMemberPasswordUseCase changeMemberPasswordUseCase;
 	private final RegisterCorporationUseCase registerCorporationUseCase;
 	private final ChangeCorporationUsernameUseCase changeCorporationUsernameUseCase;
+	private final ChangeCorporationPasswordUseCase changeCorporationPasswordUseCase;
 
 	// 상태확인
 	@GetMapping("/health")
@@ -94,6 +97,18 @@ public class MemberController {
 
 		changeMemberPasswordUseCase.changePassword(
 				changeMemberPasswordRequest.toCommand()
+		);
+
+		return CommonResponse.ok("비밀번호가 변경되었습니다.").toResponseEntity();
+	}
+
+	@PatchMapping("/corporation/password")
+	public ResponseEntity<CommonResponse<Void>> changeCorporationPassword(
+			@Valid @RequestBody ChangeCorporationPasswordRequest changeCorporationPasswordRequest
+	) {
+
+		changeCorporationPasswordUseCase.changePassword(
+				changeCorporationPasswordRequest.toCommand()
 		);
 
 		return CommonResponse.ok("비밀번호가 변경되었습니다.").toResponseEntity();

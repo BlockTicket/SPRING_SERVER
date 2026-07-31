@@ -5,5 +5,5 @@ import tikitaka.service.member.domain.exception.status_code.MemberStatusCode;
 
 public class SameAsCurrentPasswordException extends CommonException {
 
-	public SameAsCurrentPasswordException() { super(MemberStatusCode.INVALID_PASSWORD); }
+	public SameAsCurrentPasswordException() { super(MemberStatusCode.SAME_AS_CURRENT_PASSWORD); }
 }
