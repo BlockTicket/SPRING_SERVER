@@ -25,7 +25,7 @@ public class CorporationRegisterService implements RegisterCorporationUseCase {
 	private final NtsVerificationPort ntsVerificationPort;
 
 	@Override
-	public void registerCorporation(
+	public void register(
 			RegisterCorporationCommand registerCorporationCommand
 	) {
 

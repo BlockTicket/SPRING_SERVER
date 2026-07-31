@@ -13,7 +13,7 @@ public class ChangeCorporationUsernameService implements ChangeCorporationUserna
 	private final ChangeCorporationUsernamePort changeCorporationUsernamePort;
 
 	@Override
-	public void changeCorporationUsername(
+	public void changeUsername(
 			ChangeCorporationUsernameCommand changeCorporationUsernameCommand
 	) {
 

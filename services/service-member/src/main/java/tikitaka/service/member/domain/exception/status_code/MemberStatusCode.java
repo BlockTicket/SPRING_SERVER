@@ -14,6 +14,8 @@ public enum MemberStatusCode implements StatusCode {
 	EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "해당 이메일로 이미 가입된 계정이 존재합니다.", "EMAIL_ALREADY_EXIST"),
 	PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "해당 전화번호로 이미 가입된 계정이 존재합니다.","PHONE_ALREADY_EXIST"),
 	SAME_AS_CURRENT_USERNAME(HttpStatus.BAD_REQUEST, "현재 사용중인 사용자명으로 변경할 수 없습니다.", "SAME_AS_CURRENT_USERNAME"),
+	SAME_AS_CURRENT_PASSWORD(HttpStatus.BAD_REQUEST, "현재 비밀번호로 재설정할 수 없습니다.", "SAME_AS_CURRENT_PASSWORD"),
+	INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다.", "INVALID_PASSWORD"),
 
 	CORPORATION_NOT_FOUND(HttpStatus.NOT_FOUND, "법인을 찾을 수 없습니다.","CORPORATION_NOT_FOUND");
 
