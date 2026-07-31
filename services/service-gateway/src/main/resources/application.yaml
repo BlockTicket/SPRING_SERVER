@@ -1,0 +1,51 @@
+spring:
+  config:
+    import: optional:file:/services/service-gateway/.env[.properties]
+
+  application:
+    name: service-gateway
+
+  http:
+    clients:
+      connect-timeout: 2s
+      read-timeout: 30s
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          streaming-media-types:
+            - text/event-stream
+            - application/stream+json
+
+          routes:
+            - id: service-member
+              uri: ${SERVICE_MEMBER_URI:http://localhost:8082}
+              predicates:
+                - Path=/member/**
+              filters:
+                - StripPrefix=1
+
+            - id: service-file
+              uri: ${SERVICE_FILE_URI:http://localhost:8083}
+              predicates:
+                - Path=/file/**
+              filters:
+                - StripPrefix=1
+
+server:
+  port: 8080
+  forward-headers-strategy: native
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
