@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.corporation.ChangeCorporationUsernamePort;
 import tikitaka.service.member.domain.exception.exception.member.MemberNotFoundException;
-import tikitaka.service.member.domain.exception.exception.member.SameAsCurrentUsername;
+import tikitaka.service.member.domain.exception.exception.member.SameAsCurrentUsernameException;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class ChangeCorporationUsernameAdapter implements ChangeCorporationUserna
 		CorporationJpaEntity corporationJpaEntity = corporationJpaRepository.findById(id)
 				.orElseThrow(MemberNotFoundException::new);
 
-		if (corporationJpaEntity.getUsername().equals(newUsername)) throw new SameAsCurrentUsername();
+		if (corporationJpaEntity.getUsername().equals(newUsername)) throw new SameAsCurrentUsernameException();
 
 		if (corporationJpaRepository.existsByUsernameAndIdNot(newUsername, id)) {
 

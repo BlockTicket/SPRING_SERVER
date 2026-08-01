@@ -31,6 +31,7 @@ public class MemberJpaEntity {
 	private String phone;
 
 	@Setter
+	@Getter
 	@Column(length = 255)
 	private String password;
 

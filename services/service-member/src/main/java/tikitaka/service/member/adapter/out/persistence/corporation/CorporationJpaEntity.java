@@ -29,6 +29,7 @@ public class CorporationJpaEntity {
 	private String phone;
 
 	@Setter
+	@Getter
 	@Column(length = 255, nullable = false)
 	private String password;
 

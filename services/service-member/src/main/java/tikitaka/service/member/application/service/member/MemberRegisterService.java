@@ -14,7 +14,7 @@ public class MemberRegisterService implements RegisterMemberUseCase {
 	private final SaveMemberPort saveMemberPort;
 
 	@Override
-	public void registerMember(
+	public void register(
 			RegisterMemberCommand registerMemberCommand
 	) {
 
