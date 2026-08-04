@@ -22,13 +22,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 게이트웨이에서 JWT를 검증하고,
- * 검증된 사용자 정보를 X-Member-Id / X-Member-Type 헤더로 하위 서비스에 전달합니다.
- *
- * 하위 서비스(member, file 등)는 JWT를 몰라도 되고, 이 헤더만 신뢰하면 됩니다.
- * (단, 하위 서비스 포트는 외부에서 직접 접근 불가능하도록 네트워크를 막아야 안전합니다.)
- */
+
 @Component
 @RequiredArgsConstructor
 public class JwtValidationFilter extends OncePerRequestFilter {
@@ -67,8 +61,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
-        // 클라이언트가 헤더를 위조해서 보내는 것 차단
+        
         HttpServletRequest sanitized = removeIdentityHeaders(request);
 
         if (isPublicPath(request.getRequestURI())) {
