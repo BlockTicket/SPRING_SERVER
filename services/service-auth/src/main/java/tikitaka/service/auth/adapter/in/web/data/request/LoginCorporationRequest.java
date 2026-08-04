@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import tikitaka.service.auth.application.port.in.LoginCorporationCommand;
 
 public record LoginCorporationRequest(
-
         @NotBlank
         String username,
 
@@ -12,7 +11,6 @@ public record LoginCorporationRequest(
         String password,
 
         boolean rememberMe
-
 ) {
 
     public LoginCorporationCommand toCommand() {

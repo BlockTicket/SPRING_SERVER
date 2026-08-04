@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import tikitaka.service.auth.application.port.in.LoginMemberCommand;
 
 public record LoginMemberRequest(
-
         @NotBlank
         String username,
 
@@ -12,7 +11,6 @@ public record LoginMemberRequest(
         String password,
 
         boolean rememberMe
-
 ) {
 
     public LoginMemberCommand toCommand() {
