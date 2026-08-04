@@ -5,7 +5,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter'
 
-    // Spring Web (also provides RestClient used to call service-member)
+    // Spring Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // Validation
@@ -15,7 +15,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
-    // JPA (refresh token storage only)
+    // JPA 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // MySQL
