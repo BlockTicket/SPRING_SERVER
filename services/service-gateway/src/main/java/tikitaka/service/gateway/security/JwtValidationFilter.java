@@ -61,7 +61,7 @@ public class JwtValidationFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        
+
         HttpServletRequest sanitized = removeIdentityHeaders(request);
 
         if (isPublicPath(request.getRequestURI())) {
