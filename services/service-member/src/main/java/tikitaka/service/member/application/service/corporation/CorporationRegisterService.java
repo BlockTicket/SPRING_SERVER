@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationCommand;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationUseCase;
 import tikitaka.service.member.application.port.out.corporation.SaveCorporationPort;
+import tikitaka.service.member.application.port.out.event.PublishCorporationRegisteredEventPort;
 import tikitaka.service.member.application.port.out.external.NtsVerificationPort;
 import tikitaka.service.member.application.port.out.external.NtsVerificationRequest;
 import tikitaka.service.member.application.port.out.external.SaveNtsBusinessPort;
@@ -23,6 +24,7 @@ public class CorporationRegisterService implements RegisterCorporationUseCase {
 	private final SaveCorporationPort saveCorporationPort;
 	private final SaveNtsBusinessPort saveNtsBusinessPort;
 	private final NtsVerificationPort ntsVerificationPort;
+	private final PublishCorporationRegisteredEventPort publishCorporationRegisteredEventPort;
 
 	@Override
 	public void registerCorporation(
@@ -42,7 +44,7 @@ public class CorporationRegisterService implements RegisterCorporationUseCase {
 
 		UUID corporationId = registerCorporationCommand.id();
 
-		saveCorporationPort.saveCorporation(new Corporation(
+		String passwordHash = saveCorporationPort.saveCorporation(new Corporation(
 				corporationId,
 				registerCorporationCommand.username(),
 				registerCorporationCommand.email(),
@@ -53,6 +55,12 @@ public class CorporationRegisterService implements RegisterCorporationUseCase {
 		saveNtsBusinessPort.saveNtsBusiness(
 				corporationId,
 				business
+		);
+
+		publishCorporationRegisteredEventPort.publishCorporationRegistered(
+				corporationId,
+				registerCorporationCommand.username(),
+				passwordHash
 		);
 	}
 }

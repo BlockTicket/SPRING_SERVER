@@ -4,5 +4,5 @@ import tikitaka.service.member.domain.member.Member;
 
 public interface SaveMemberPort {
 
-	void saveMember(Member member);
+	String saveMember(Member member);
 }

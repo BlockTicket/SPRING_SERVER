@@ -19,7 +19,7 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 	private final CorporationJpaRepository corporationJpaRepository;
 
 	@Override
-	public void saveCorporation(
+	public String saveCorporation(
 			Corporation corporation
 	) {
 
@@ -29,14 +29,18 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 				corporation.getPhone()
 		);
 
+		String encodedPassword = passwordEncoder.encode(corporation.getPassword());
+
 		corporationJpaRepository.save(CorporationJpaEntity.builder()
 				.id(corporation.getId())
 				.username(corporation.getUsername())
 				.email(corporation.getEmail())
 				.phone(corporation.getPhone())
-				.password(passwordEncoder.encode(corporation.getPassword()))
+				.password(encodedPassword)
 				.build()
 		);
+
+		return encodedPassword;
 	}
 
 	private void duplicateCheck(

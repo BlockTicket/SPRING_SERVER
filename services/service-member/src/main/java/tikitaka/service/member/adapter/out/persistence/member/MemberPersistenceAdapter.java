@@ -19,7 +19,7 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 	private final MemberJpaRepository memberJpaRepository;
 
 	@Override
-	public void saveMember(Member member) {
+	public String saveMember(Member member) {
 
 		duplicateCheck(
 				member.getUsername(),
@@ -27,15 +27,19 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				member.getPhone()
 		);
 
+		String encodedPassword = passwordEncoder.encode(member.getPassword());
+
 		memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(member.getId())
 				.username(member.getUsername())
 				.email(member.getEmail())
 				.phone(member.getPhone())
-				.password(passwordEncoder.encode(member.getPassword()))
+				.password(encodedPassword)
 				.provider(member.getProvider())
 				.build()
 		);
+
+		return encodedPassword;
 	}
 
 	private void duplicateCheck(
