@@ -3,8 +3,8 @@ package tikitaka.service.auth.application.service.auth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tikitaka.service.auth.application.port.in.auth.SigninCommand;
-import tikitaka.service.auth.application.port.in.auth.SigninResult;
+import tikitaka.service.auth.application.port.in.auth.SignInCommand;
+import tikitaka.service.auth.application.port.in.auth.SignInResult;
 import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
 import tikitaka.service.auth.application.port.out.access_token.SaveAccessTokenPort;
 import tikitaka.service.auth.application.port.out.credential.FindCredentialPort;
@@ -32,8 +32,8 @@ public class SignInService implements SigninUseCase {
 	private final SaveAccessTokenPort saveAccessTokenPort;
 
 	@Override
-	public SigninResult signin(
-			SigninCommand signinCommand
+	public SignInResult signin(
+			SignInCommand signinCommand
 	) {
 
 		Credential credential = findCredentialPort
@@ -69,7 +69,7 @@ public class SignInService implements SigninUseCase {
 				access.ttl()
 		);
 
-		return new SigninResult(
+		return new SignInResult(
 				access.token(),
 				refresh.token(),
 				refresh.ttl()

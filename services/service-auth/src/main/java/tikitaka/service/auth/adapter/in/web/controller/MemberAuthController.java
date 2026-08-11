@@ -18,10 +18,10 @@ import tikitaka.service.auth.adapter.in.web.data.response.RefreshTokenResponse;
 import tikitaka.service.auth.adapter.in.web.data.response.SigninResponse;
 import tikitaka.service.auth.application.port.in.auth.RefreshTokenCommand;
 import tikitaka.service.auth.application.port.in.auth.RefreshTokenUseCase;
-import tikitaka.service.auth.application.port.in.auth.SigninResult;
+import tikitaka.service.auth.application.port.in.auth.SignInResult;
 import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
-import tikitaka.service.auth.application.port.in.auth.SignoutCommand;
-import tikitaka.service.auth.application.port.in.auth.SignoutUseCase;
+import tikitaka.service.auth.application.port.in.auth.SignOutCommand;
+import tikitaka.service.auth.application.port.in.auth.SignOutUseCase;
 import tikitaka.service.auth.domain.exception.exception.AccessTokenRequiredException;
 import tikitaka.service.auth.domain.exception.exception.RefreshTokenRequiredException;
 import tikitaka.service.auth.domain.role.Role;
@@ -35,7 +35,7 @@ public class MemberAuthController {
 	private static final Role ROLE = Role.MEMBER;
 
 	private final SigninUseCase signinUseCase;
-	private final SignoutUseCase signoutUseCase;
+	private final SignOutUseCase signoutUseCase;
 	private final RefreshTokenUseCase refreshTokenUseCase;
 
 	@PostMapping("/signin")
@@ -43,7 +43,7 @@ public class MemberAuthController {
 			@Valid @RequestBody SigninRequest signinRequest
 	) {
 
-		SigninResult result = signinUseCase.signin(
+		SignInResult result = signinUseCase.signin(
 				signinRequest.toCommand(ROLE)
 		);
 
@@ -75,7 +75,7 @@ public class MemberAuthController {
 		}
 
 		signoutUseCase.signout(
-				new SignoutCommand(authorization.substring(BEARER_PREFIX.length()), ROLE)
+				new SignOutCommand(authorization.substring(BEARER_PREFIX.length()), ROLE)
 		);
 
 		return CommonResponse.ok("로그아웃 되었습니다.").toResponseEntity();

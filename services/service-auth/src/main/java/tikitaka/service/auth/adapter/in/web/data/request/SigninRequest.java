@@ -1,7 +1,7 @@
 package tikitaka.service.auth.adapter.in.web.data.request;
 
 import jakarta.validation.constraints.NotBlank;
-import tikitaka.service.auth.application.port.in.auth.SigninCommand;
+import tikitaka.service.auth.application.port.in.auth.SignInCommand;
 import tikitaka.service.auth.domain.role.Role;
 
 public record SigninRequest(
@@ -12,9 +12,9 @@ public record SigninRequest(
 		String password
 ) {
 
-	public SigninCommand toCommand(Role role) {
+	public SignInCommand toCommand(Role role) {
 
-		return new SigninCommand(
+		return new SignInCommand(
 				username,
 				password,
 				role
