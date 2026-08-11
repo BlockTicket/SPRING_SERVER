@@ -31,9 +31,6 @@ import tikitaka.service.auth.domain.role.Role;
 @RequestMapping("/api/auth/corporation")
 public class CorporationAuthController {
 
-	private static final String BEARER_PREFIX = "Bearer ";
-	private static final Role ROLE = Role.CORPORATION;
-
 	private final SigninUseCase signinUseCase;
 	private final SignOutUseCase signoutUseCase;
 	private final RefreshTokenUseCase refreshTokenUseCase;
@@ -44,7 +41,7 @@ public class CorporationAuthController {
 	) {
 
 		SignInResult result = signinUseCase.signin(
-				signinRequest.toCommand(ROLE)
+				signinRequest.toCommand(Role.CORPORATION)
 		);
 
 		ResponseCookie cookie = RefreshTokenCookieFactory.create(
@@ -69,13 +66,13 @@ public class CorporationAuthController {
 
 		String authorization = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
+		if (authorization == null || !authorization.startsWith("Bearer ")) {
 
 			throw new AccessTokenRequiredException();
 		}
 
 		signoutUseCase.signout(
-				new SignOutCommand(authorization.substring(BEARER_PREFIX.length()), ROLE)
+				new SignOutCommand(authorization.substring("Bearer ".length()), Role.CORPORATION)
 		);
 
 		return CommonResponse.ok("로그아웃 되었습니다.").toResponseEntity();
@@ -92,7 +89,7 @@ public class CorporationAuthController {
 		}
 
 		String accessToken = refreshTokenUseCase.refresh(
-				new RefreshTokenCommand(refreshToken, ROLE)
+				new RefreshTokenCommand(refreshToken, Role.CORPORATION)
 		);
 
 		return CommonResponse.ok(

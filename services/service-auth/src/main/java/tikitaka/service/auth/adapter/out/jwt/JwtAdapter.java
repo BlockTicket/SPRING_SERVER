@@ -23,8 +23,6 @@ import java.util.UUID;
 @Component
 public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRefreshTokenPort {
 
-	private static final String CLAIM_ROLE = "role";
-
 	private final SecretKey secretKey;
 	private final Duration accessTokenTtl;
 	private final Duration refreshTokenTtl;
@@ -53,7 +51,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 
 			return new TokenPayload(
 					UUID.fromString(claims.getSubject()),
-					Role.valueOf(claims.get(CLAIM_ROLE, String.class))
+					Role.valueOf(claims.get("role", String.class))
 			);
 		} catch (ExpiredJwtException e) {
 
@@ -99,7 +97,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 
 		return Jwts.builder()
 				.subject(userId.toString())
-				.claim(CLAIM_ROLE, role.name())
+				.claim("role", role.name())
 				.issuedAt(now)
 				.expiration(expiration)
 				.signWith(secretKey)
