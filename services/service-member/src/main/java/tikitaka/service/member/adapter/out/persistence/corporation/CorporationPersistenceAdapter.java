@@ -1,7 +1,6 @@
 package tikitaka.service.member.adapter.out.persistence.corporation;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.adapter.out.persistence.member.DuplicateCheck;
@@ -19,12 +18,11 @@ import tikitaka.service.member.domain.member.MemberType;
 @Transactional(rollbackFor = Exception.class)
 public class CorporationPersistenceAdapter implements SaveCorporationPort {
 
-	private final PasswordEncoder passwordEncoder;
 	private final MemberJpaRepository memberJpaRepository;
 	private final CorporationJpaRepository corporationJpaRepository;
 
 	@Override
-	public String saveCorporation(
+	public void saveCorporation(
 			Corporation corporation
 	) {
 
@@ -34,14 +32,12 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 				corporation.getPhone()
 		);
 
-		String encodedPassword = passwordEncoder.encode(corporation.getPassword());
-
 		MemberJpaEntity memberJpaEntity = memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(corporation.getId())
 				.username(corporation.getUsername())
 				.email(corporation.getEmail())
 				.phone(corporation.getPhone())
-				.password(encodedPassword)
+				.password(corporation.getPassword())
 				.type(MemberType.CORPORATION)
 				.provider(null)
 				.build()
@@ -51,8 +47,6 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 				.memberJpaEntity(memberJpaEntity)
 				.build()
 		);
-
-		return encodedPassword;
 	}
 
 	private void duplicateCheck(

@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class SigninService implements SigninUseCase {
+public class SignInService implements SigninUseCase {
 
 	private final FindCredentialPort findCredentialPort;
 	private final PasswordMatcherPort passwordMatcherPort;

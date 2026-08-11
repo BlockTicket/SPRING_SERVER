@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @ConfigurationProperties(prefix = "tikitaka.redis")
 public record RedisProperties(
-
         @DefaultValue("localhost")
         String host,
 

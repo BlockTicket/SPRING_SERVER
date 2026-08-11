@@ -1,6 +1,7 @@
 package tikitaka.service.member.application.service.corporation;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.in.corporation.RegisterCorporationCommand;
@@ -21,6 +22,7 @@ import java.util.UUID;
 @Transactional(rollbackFor = Exception.class)
 public class CorporationRegisterService implements RegisterCorporationUseCase {
 
+	private final PasswordEncoder passwordEncoder;
 	private final SaveCorporationPort saveCorporationPort;
 	private final SaveNtsBusinessPort saveNtsBusinessPort;
 	private final NtsVerificationPort ntsVerificationPort;
@@ -44,12 +46,14 @@ public class CorporationRegisterService implements RegisterCorporationUseCase {
 
 		UUID corporationId = registerCorporationCommand.id();
 
-		String passwordHash = saveCorporationPort.saveCorporation(new Corporation(
+		String passwordHash = passwordEncoder.encode(registerCorporationCommand.password());
+
+		saveCorporationPort.saveCorporation(new Corporation(
 				corporationId,
 				registerCorporationCommand.username(),
 				registerCorporationCommand.email(),
 				registerCorporationCommand.phone(),
-				registerCorporationCommand.password()
+				passwordHash
 		));
 
 		saveNtsBusinessPort.saveNtsBusiness(

@@ -4,5 +4,5 @@ import tikitaka.service.member.domain.corporation.Corporation;
 
 public interface SaveCorporationPort {
 
-	String saveCorporation(Corporation corporation);
+	void saveCorporation(Corporation corporation);
 }

@@ -35,10 +35,7 @@ public class RefreshTokenService implements RefreshTokenUseCase {
 				.findByUserIdAndRole(payload.userId(), refreshTokenCommand.role())
 				.orElseThrow(RefreshTokenNotFoundException::new);
 
-		if (!stored.getToken().equals(refreshTokenCommand.refreshToken())) {
-
-			throw new RefreshTokenMismatchException();
-		}
+		if (!stored.getToken().equals(refreshTokenCommand.refreshToken())) throw new RefreshTokenMismatchException();
 
 		IssueAccessTokenPort.IssuedAccessToken issued = issueAccessTokenPort.issueAccessToken(
 				payload.userId(),

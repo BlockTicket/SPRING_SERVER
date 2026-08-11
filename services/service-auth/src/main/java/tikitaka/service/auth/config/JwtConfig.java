@@ -6,5 +6,4 @@ import tikitaka.service.auth.adapter.out.jwt.JwtProperties;
 
 @Configuration
 @EnableConfigurationProperties(JwtProperties.class)
-public class JwtConfig {
-}
+public class JwtConfig {}

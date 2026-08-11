@@ -13,7 +13,7 @@ import tikitaka.service.auth.application.port.out.refresh_token.DeleteRefreshTok
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class SignoutService implements SignoutUseCase {
+public class SignOutService implements SignoutUseCase {
 
 	private final ParseTokenPort parseTokenPort;
 	private final DeleteRefreshTokenPort deleteRefreshTokenPort;

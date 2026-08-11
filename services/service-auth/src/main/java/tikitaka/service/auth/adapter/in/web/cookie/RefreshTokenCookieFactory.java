@@ -6,9 +6,6 @@ import java.time.Duration;
 
 public final class RefreshTokenCookieFactory {
 
-	private static final String COOKIE_NAME = "refreshToken";
-	private static final String COOKIE_PATH = "/";
-
 	private RefreshTokenCookieFactory() {}
 
 	public static ResponseCookie create(
@@ -16,11 +13,11 @@ public final class RefreshTokenCookieFactory {
 			Duration ttl
 	) {
 
-		return ResponseCookie.from(COOKIE_NAME, refreshToken)
+		return ResponseCookie.from("refreshToken", refreshToken)
 				.httpOnly(true)
 				.secure(true)
 				.sameSite("Strict")
-				.path(COOKIE_PATH)
+				.path("/")
 				.maxAge(ttl)
 				.build();
 	}

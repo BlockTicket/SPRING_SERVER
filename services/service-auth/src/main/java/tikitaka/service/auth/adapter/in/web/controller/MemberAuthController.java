@@ -58,7 +58,8 @@ public class MemberAuthController {
 				.body(CommonResponse.ok(
 						"로그인 되었습니다.",
 						new SigninResponse(result.accessToken())
-				));
+				)
+            );
 	}
 
 	@PostMapping("/signout")
@@ -85,10 +86,7 @@ public class MemberAuthController {
 			@CookieValue(name = "refreshToken", required = false) String refreshToken
 	) {
 
-		if (refreshToken == null || refreshToken.isBlank()) {
-
-			throw new RefreshTokenRequiredException();
-		}
+		if (refreshToken == null || refreshToken.isBlank()) throw new RefreshTokenRequiredException();
 
 		String accessToken = refreshTokenUseCase.refresh(
 				new RefreshTokenCommand(refreshToken, ROLE)

@@ -58,7 +58,8 @@ public class CorporationAuthController {
 				.body(CommonResponse.ok(
 						"로그인 되었습니다.",
 						new SigninResponse(result.accessToken())
-				));
+				)
+            );
 	}
 
 	@PostMapping("/signout")
