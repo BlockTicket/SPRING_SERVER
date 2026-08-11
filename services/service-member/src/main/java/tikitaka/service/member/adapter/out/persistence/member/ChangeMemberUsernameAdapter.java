@@ -7,6 +7,7 @@ import tikitaka.service.member.application.port.out.member.ChangeMemberUsernameP
 import tikitaka.service.member.domain.exception.exception.member.MemberNotFoundException;
 import tikitaka.service.member.domain.exception.exception.member.SameAsCurrentUsername;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
+import tikitaka.service.member.domain.member.MemberType;
 
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class ChangeMemberUsernameAdapter implements ChangeMemberUsernamePort {
 
 		if (memberJpaEntity.getUsername().equals(newUsername)) throw new SameAsCurrentUsername();
 
-		if (memberJpaRepository.existsByUsernameAndIdNot(newUsername, id)) {
+		if (memberJpaRepository.existsByUsernameAndTypeAndIdNot(newUsername, MemberType.MEMBER, id)) {
 
 			throw new UsernameAlreadyExistException();
 		}

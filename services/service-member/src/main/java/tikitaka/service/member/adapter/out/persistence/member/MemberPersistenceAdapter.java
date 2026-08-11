@@ -9,6 +9,7 @@ import tikitaka.service.member.domain.exception.exception.member.EmailAlreadyExi
 import tikitaka.service.member.domain.exception.exception.member.PhoneAlreadyExistException;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 import tikitaka.service.member.domain.member.Member;
+import tikitaka.service.member.domain.member.MemberType;
 
 @Component
 @RequiredArgsConstructor
@@ -35,6 +36,7 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				.email(member.getEmail())
 				.phone(member.getPhone())
 				.password(encodedPassword)
+				.type(MemberType.MEMBER)
 				.provider(member.getProvider())
 				.build()
 		);
@@ -51,7 +53,8 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 		DuplicateCheck duplicateCheck = memberJpaRepository.checkDuplicate(
 				username,
 				email,
-				phone
+				phone,
+				MemberType.MEMBER.name()
 		);
 
 		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();

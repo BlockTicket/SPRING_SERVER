@@ -1,11 +1,11 @@
-package tikitaka.service.auth.application.service.member;
+package tikitaka.service.auth.application.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tikitaka.service.auth.application.port.in.member.SigninMemberCommand;
-import tikitaka.service.auth.application.port.in.member.SigninMemberResult;
-import tikitaka.service.auth.application.port.in.member.SigninMemberUseCase;
+import tikitaka.service.auth.application.port.in.auth.SigninCommand;
+import tikitaka.service.auth.application.port.in.auth.SigninResult;
+import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
 import tikitaka.service.auth.application.port.out.access_token.SaveAccessTokenPort;
 import tikitaka.service.auth.application.port.out.credential.FindCredentialPort;
 import tikitaka.service.auth.application.port.out.jwt.IssueAccessTokenPort;
@@ -16,14 +16,13 @@ import tikitaka.service.auth.domain.credential.Credential;
 import tikitaka.service.auth.domain.exception.exception.CredentialNotFoundException;
 import tikitaka.service.auth.domain.exception.exception.InvalidPasswordException;
 import tikitaka.service.auth.domain.refresh_token.RefreshToken;
-import tikitaka.service.auth.domain.role.Role;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class SigninMemberService implements SigninMemberUseCase {
+public class SigninService implements SigninUseCase {
 
 	private final FindCredentialPort findCredentialPort;
 	private final PasswordMatcherPort passwordMatcherPort;
@@ -33,44 +32,44 @@ public class SigninMemberService implements SigninMemberUseCase {
 	private final SaveAccessTokenPort saveAccessTokenPort;
 
 	@Override
-	public SigninMemberResult signin(
-			SigninMemberCommand signinMemberCommand
+	public SigninResult signin(
+			SigninCommand signinCommand
 	) {
 
 		Credential credential = findCredentialPort
-				.findByUsernameAndRole(signinMemberCommand.username(), Role.MEMBER)
+				.findByUsernameAndRole(signinCommand.username(), signinCommand.role())
 				.orElseThrow(CredentialNotFoundException::new);
 
-		if (!passwordMatcherPort.matches(signinMemberCommand.password(), credential.getPassword())) {
+		if (!passwordMatcherPort.matches(signinCommand.password(), credential.getPassword())) {
 
 			throw new InvalidPasswordException();
 		}
 
 		IssueAccessTokenPort.IssuedAccessToken access = issueAccessTokenPort.issueAccessToken(
 				credential.getId(),
-				Role.MEMBER
+				signinCommand.role()
 		);
 
 		IssueRefreshTokenPort.IssuedRefreshToken refresh = issueRefreshTokenPort.issueRefreshToken(
 				credential.getId(),
-				Role.MEMBER
+				signinCommand.role()
 		);
 
 		saveRefreshTokenPort.save(new RefreshToken(
 				credential.getId(),
-				Role.MEMBER,
+				signinCommand.role(),
 				refresh.token(),
 				LocalDateTime.now().plus(refresh.ttl())
 		));
 
 		saveAccessTokenPort.save(
 				credential.getId(),
-				Role.MEMBER,
+				signinCommand.role(),
 				access.token(),
 				access.ttl()
 		);
 
-		return new SigninMemberResult(
+		return new SigninResult(
 				access.token(),
 				refresh.token(),
 				refresh.ttl()

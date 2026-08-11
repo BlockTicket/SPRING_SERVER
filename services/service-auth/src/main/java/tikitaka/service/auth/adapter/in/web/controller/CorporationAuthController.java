@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tikitaka.core.common.data.CommonResponse;
 import tikitaka.service.auth.adapter.in.web.cookie.RefreshTokenCookieFactory;
-import tikitaka.service.auth.adapter.in.web.data.request.SigninCorporationRequest;
+import tikitaka.service.auth.adapter.in.web.data.request.SigninRequest;
 import tikitaka.service.auth.adapter.in.web.data.response.RefreshTokenResponse;
 import tikitaka.service.auth.adapter.in.web.data.response.SigninResponse;
-import tikitaka.service.auth.application.port.in.corporation.RefreshCorporationTokenCommand;
-import tikitaka.service.auth.application.port.in.corporation.RefreshCorporationTokenUseCase;
-import tikitaka.service.auth.application.port.in.corporation.SigninCorporationResult;
-import tikitaka.service.auth.application.port.in.corporation.SigninCorporationUseCase;
-import tikitaka.service.auth.application.port.in.corporation.SignoutCorporationCommand;
-import tikitaka.service.auth.application.port.in.corporation.SignoutCorporationUseCase;
+import tikitaka.service.auth.application.port.in.auth.RefreshTokenCommand;
+import tikitaka.service.auth.application.port.in.auth.RefreshTokenUseCase;
+import tikitaka.service.auth.application.port.in.auth.SigninResult;
+import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
+import tikitaka.service.auth.application.port.in.auth.SignoutCommand;
+import tikitaka.service.auth.application.port.in.auth.SignoutUseCase;
 import tikitaka.service.auth.domain.exception.exception.AccessTokenRequiredException;
 import tikitaka.service.auth.domain.exception.exception.RefreshTokenRequiredException;
+import tikitaka.service.auth.domain.role.Role;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,18 +32,19 @@ import tikitaka.service.auth.domain.exception.exception.RefreshTokenRequiredExce
 public class CorporationAuthController {
 
 	private static final String BEARER_PREFIX = "Bearer ";
+	private static final Role ROLE = Role.CORPORATION;
 
-	private final SigninCorporationUseCase signinCorporationUseCase;
-	private final SignoutCorporationUseCase signoutCorporationUseCase;
-	private final RefreshCorporationTokenUseCase refreshCorporationTokenUseCase;
+	private final SigninUseCase signinUseCase;
+	private final SignoutUseCase signoutUseCase;
+	private final RefreshTokenUseCase refreshTokenUseCase;
 
 	@PostMapping("/signin")
 	public ResponseEntity<CommonResponse<SigninResponse>> signin(
-			@Valid @RequestBody SigninCorporationRequest signinCorporationRequest
+			@Valid @RequestBody SigninRequest signinRequest
 	) {
 
-		SigninCorporationResult result = signinCorporationUseCase.signin(
-				signinCorporationRequest.toCommand()
+		SigninResult result = signinUseCase.signin(
+				signinRequest.toCommand(ROLE)
 		);
 
 		ResponseCookie cookie = RefreshTokenCookieFactory.create(
@@ -71,8 +73,8 @@ public class CorporationAuthController {
 			throw new AccessTokenRequiredException();
 		}
 
-		signoutCorporationUseCase.signout(
-				new SignoutCorporationCommand(authorization.substring(BEARER_PREFIX.length()))
+		signoutUseCase.signout(
+				new SignoutCommand(authorization.substring(BEARER_PREFIX.length()), ROLE)
 		);
 
 		return CommonResponse.ok("로그아웃 되었습니다.").toResponseEntity();
@@ -88,8 +90,8 @@ public class CorporationAuthController {
 			throw new RefreshTokenRequiredException();
 		}
 
-		String accessToken = refreshCorporationTokenUseCase.refresh(
-				new RefreshCorporationTokenCommand(refreshToken)
+		String accessToken = refreshTokenUseCase.refresh(
+				new RefreshTokenCommand(refreshToken, ROLE)
 		);
 
 		return CommonResponse.ok(
