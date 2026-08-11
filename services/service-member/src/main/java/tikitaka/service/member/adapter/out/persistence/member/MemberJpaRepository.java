@@ -31,5 +31,5 @@ public interface MemberJpaRepository extends JpaRepository<MemberJpaEntity, UUID
 			@Param("type") String type
 	);
 
-	boolean existsByUsernameAndTypeAndIdNot(String username, MemberType type, UUID id);
+	boolean existsByUsernameAndType(String username, MemberType type);
 }
