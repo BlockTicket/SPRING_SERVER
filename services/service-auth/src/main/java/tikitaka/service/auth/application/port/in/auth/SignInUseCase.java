@@ -1,6 +1,6 @@
 package tikitaka.service.auth.application.port.in.auth;
 
-public interface SigninUseCase {
+public interface SignInUseCase {
 
 	SignInResult signin(SignInCommand signinCommand);
 }

@@ -19,7 +19,7 @@ import tikitaka.service.auth.adapter.in.web.data.response.SigninResponse;
 import tikitaka.service.auth.application.port.in.auth.RefreshTokenCommand;
 import tikitaka.service.auth.application.port.in.auth.RefreshTokenUseCase;
 import tikitaka.service.auth.application.port.in.auth.SignInResult;
-import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
+import tikitaka.service.auth.application.port.in.auth.SignInUseCase;
 import tikitaka.service.auth.application.port.in.auth.SignOutCommand;
 import tikitaka.service.auth.application.port.in.auth.SignOutUseCase;
 import tikitaka.service.auth.domain.exception.exception.AccessTokenRequiredException;
@@ -31,7 +31,7 @@ import tikitaka.service.auth.domain.role.Role;
 @RequestMapping("/api/auth/corporation")
 public class CorporationAuthController {
 
-	private final SigninUseCase signinUseCase;
+	private final SignInUseCase signinUseCase;
 	private final SignOutUseCase signoutUseCase;
 	private final RefreshTokenUseCase refreshTokenUseCase;
 

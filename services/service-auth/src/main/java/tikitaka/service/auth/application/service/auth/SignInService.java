@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.auth.application.port.in.auth.SignInCommand;
 import tikitaka.service.auth.application.port.in.auth.SignInResult;
-import tikitaka.service.auth.application.port.in.auth.SigninUseCase;
+import tikitaka.service.auth.application.port.in.auth.SignInUseCase;
 import tikitaka.service.auth.application.port.out.access_token.SaveAccessTokenPort;
 import tikitaka.service.auth.application.port.out.credential.FindCredentialPort;
 import tikitaka.service.auth.application.port.out.jwt.IssueAccessTokenPort;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
-public class SignInService implements SigninUseCase {
+public class SignInService implements SignInUseCase {
 
 	private final FindCredentialPort findCredentialPort;
 	private final PasswordMatcherPort passwordMatcherPort;
