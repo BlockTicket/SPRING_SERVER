@@ -31,9 +31,6 @@ import tikitaka.service.auth.domain.role.Role;
 @RequestMapping("/api/auth/member")
 public class MemberAuthController {
 
-	private static final String BEARER_PREFIX = "Bearer ";
-	private static final Role ROLE = Role.MEMBER;
-
 	private final SigninUseCase signinUseCase;
 	private final SignOutUseCase signoutUseCase;
 	private final RefreshTokenUseCase refreshTokenUseCase;
@@ -44,7 +41,7 @@ public class MemberAuthController {
 	) {
 
 		SignInResult result = signinUseCase.signin(
-				signinRequest.toCommand(ROLE)
+				signinRequest.toCommand(Role.MEMBER)
 		);
 
 		ResponseCookie cookie = RefreshTokenCookieFactory.create(
@@ -69,13 +66,13 @@ public class MemberAuthController {
 
 		String authorization = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (authorization == null || !authorization.startsWith(BEARER_PREFIX)) {
+		if (authorization == null || !authorization.startsWith("Bearer ")) {
 
 			throw new AccessTokenRequiredException();
 		}
 
 		signoutUseCase.signout(
-				new SignOutCommand(authorization.substring(BEARER_PREFIX.length()), ROLE)
+				new SignOutCommand(authorization.substring("Bearer ".length()), Role.MEMBER)
 		);
 
 		return CommonResponse.ok("로그아웃 되었습니다.").toResponseEntity();
@@ -89,7 +86,7 @@ public class MemberAuthController {
 		if (refreshToken == null || refreshToken.isBlank()) throw new RefreshTokenRequiredException();
 
 		String accessToken = refreshTokenUseCase.refresh(
-				new RefreshTokenCommand(refreshToken, ROLE)
+				new RefreshTokenCommand(refreshToken, Role.MEMBER)
 		);
 
 		return CommonResponse.ok(
