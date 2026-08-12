@@ -40,10 +40,7 @@ public class SignInService implements SignInUseCase {
 				.findByUsernameAndRole(signinCommand.username(), signinCommand.role())
 				.orElseThrow(CredentialNotFoundException::new);
 
-		if (!passwordMatcherPort.matches(signinCommand.password(), credential.getPassword())) {
-
-			throw new InvalidPasswordException();
-		}
+		if (!passwordMatcherPort.matches(signinCommand.password(), credential.getPassword())) throw new InvalidPasswordException();
 
 		IssueAccessTokenPort.IssuedAccessToken access = issueAccessTokenPort.issueAccessToken(
 				credential.getId(),

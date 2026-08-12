@@ -66,10 +66,7 @@ public class MemberAuthController {
 
 		String authorization = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
-		if (authorization == null || !authorization.startsWith("Bearer ")) {
-
-			throw new AccessTokenRequiredException();
-		}
+		if (authorization == null || !authorization.startsWith("Bearer ")) throw new AccessTokenRequiredException();
 
 		signoutUseCase.signout(
 				new SignOutCommand(authorization.substring("Bearer ".length()), Role.MEMBER)
