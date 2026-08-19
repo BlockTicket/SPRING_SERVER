@@ -1,7 +1,6 @@
 package tikitaka.service.member.adapter.out.persistence.member;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import tikitaka.service.member.application.port.out.member.SaveMemberPort;
@@ -9,13 +8,13 @@ import tikitaka.service.member.domain.exception.exception.member.EmailAlreadyExi
 import tikitaka.service.member.domain.exception.exception.member.PhoneAlreadyExistException;
 import tikitaka.service.member.domain.exception.exception.member.UsernameAlreadyExistException;
 import tikitaka.service.member.domain.member.Member;
+import tikitaka.service.member.domain.member.MemberType;
 
 @Component
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class MemberPersistenceAdapter implements SaveMemberPort {
 
-	private final PasswordEncoder passwordEncoder;
 	private final MemberJpaRepository memberJpaRepository;
 
 	@Override
@@ -32,7 +31,8 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 				.username(member.getUsername())
 				.email(member.getEmail())
 				.phone(member.getPhone())
-				.password(passwordEncoder.encode(member.getPassword()))
+				.password(member.getPassword())
+				.type(MemberType.MEMBER)
 				.provider(member.getProvider())
 				.build()
 		);
@@ -47,7 +47,8 @@ public class MemberPersistenceAdapter implements SaveMemberPort {
 		DuplicateCheck duplicateCheck = memberJpaRepository.checkDuplicate(
 				username,
 				email,
-				phone
+				phone,
+				MemberType.MEMBER.name()
 		);
 
 		if (duplicateCheck.getUsernameExists() > 0) throw new UsernameAlreadyExistException();

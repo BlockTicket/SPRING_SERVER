@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:file:/services/service-member/.env[.properties]
+    import: optional:file:./.env[.properties]
 
   application:
     name: service-member
@@ -15,6 +15,10 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+tikitaka:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
 
 server:
   port: 8082
