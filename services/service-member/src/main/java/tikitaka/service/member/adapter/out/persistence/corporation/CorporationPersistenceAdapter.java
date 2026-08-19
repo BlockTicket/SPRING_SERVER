@@ -19,7 +19,6 @@ import tikitaka.service.member.domain.member.MemberType;
 public class CorporationPersistenceAdapter implements SaveCorporationPort {
 
 	private final MemberJpaRepository memberJpaRepository;
-	private final CorporationJpaRepository corporationJpaRepository;
 
 	@Override
 	public void saveCorporation(
@@ -32,7 +31,7 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 				corporation.getPhone()
 		);
 
-		MemberJpaEntity memberJpaEntity = memberJpaRepository.save(MemberJpaEntity.builder()
+		memberJpaRepository.save(MemberJpaEntity.builder()
 				.id(corporation.getId())
 				.username(corporation.getUsername())
 				.email(corporation.getEmail())
@@ -40,11 +39,6 @@ public class CorporationPersistenceAdapter implements SaveCorporationPort {
 				.password(corporation.getPassword())
 				.type(MemberType.CORPORATION)
 				.provider(null)
-				.build()
-		);
-
-		corporationJpaRepository.save(CorporationJpaEntity.builder()
-				.memberJpaEntity(memberJpaEntity)
 				.build()
 		);
 	}
