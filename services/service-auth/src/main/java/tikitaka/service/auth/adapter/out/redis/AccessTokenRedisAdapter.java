@@ -14,8 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AccessTokenRedisAdapter implements SaveAccessTokenPort, DeleteAccessTokenPort {
 
-	private static final String KEY_PREFIX = "access_token:";
-
 	private final StringRedisTemplate stringRedisTemplate;
 
 	@Override
@@ -45,6 +43,6 @@ public class AccessTokenRedisAdapter implements SaveAccessTokenPort, DeleteAcces
 			Role role
 	) {
 
-		return KEY_PREFIX + role.name() + ":" + userId;
+		return "access_token:" + role.name() + ":" + userId;
 	}
 }
