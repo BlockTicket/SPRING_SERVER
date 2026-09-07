@@ -27,7 +27,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/terms")
+@RequestMapping("/api")
 public class TermController {
 
 	private final CreateTermUseCase createTermUseCase;
@@ -36,7 +36,7 @@ public class TermController {
 	private final UpdateTermUseCase updateTermUseCase;
 	private final DeleteTermUseCase deleteTermUseCase;
 
-	@PostMapping
+	@PostMapping("/term")
 	public ResponseEntity<CommonResponse<TermUrlResponse>> createTerm(
 			@Valid @RequestBody CreateTermRequest createTermRequest
 	) {
@@ -45,11 +45,11 @@ public class TermController {
 
 		return CommonResponse.ok(
 				"이용약관이 등록되었습니다.",
-				new TermUrlResponse("/api/terms/" + termId)
+				new TermUrlResponse("/api/term/" + termId)
 		).toResponseEntity();
 	}
 
-	@GetMapping
+	@GetMapping("/terms")
 	public ResponseEntity<CommonResponse<List<TermResponse>>> getTerms() {
 
 		List<TermResponse> terms = getTermsUseCase.getTerms().stream()
@@ -59,7 +59,7 @@ public class TermController {
 		return CommonResponse.ok("전체 이용약관을 조회했습니다.", terms).toResponseEntity();
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/term/{id}")
 	public ResponseEntity<CommonResponse<TermResponse>> getTerm(
 			@PathVariable UUID id
 	) {
@@ -69,21 +69,20 @@ public class TermController {
 		return CommonResponse.ok("이용약관을 조회했습니다.", term).toResponseEntity();
 	}
 
-	@PatchMapping("/{id}")
+	@PatchMapping("/term")
 	public ResponseEntity<CommonResponse<TermUrlResponse>> updateTerm(
-			@PathVariable UUID id,
 			@Valid @RequestBody UpdateTermRequest updateTermRequest
 	) {
 
-		updateTermUseCase.updateTerm(updateTermRequest.toCommand(id));
+		updateTermUseCase.updateTerm(updateTermRequest.toCommand());
 
 		return CommonResponse.ok(
 				"이용약관이 수정되었습니다.",
-				new TermUrlResponse("/api/terms/" + id)
+				new TermUrlResponse("/api/term/" + updateTermRequest.id())
 		).toResponseEntity();
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/term/{id}")
 	public ResponseEntity<CommonResponse<Void>> deleteTerm(
 			@PathVariable UUID id
 	) {
