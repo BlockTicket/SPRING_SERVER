@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -113,6 +114,16 @@ class TermControllerTest {
 	}
 
 	@Test
+	void returnEmptyListWhenNoTermsExist() throws Exception {
+		when(getTermsUseCase.getTerms()).thenReturn(List.of());
+
+		mockMvc.perform(get("/api/terms"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data").isArray())
+				.andExpect(jsonPath("$.data").isEmpty());
+	}
+
+	@Test
 	void getSingleTerm() throws Exception {
 		when(getTermUseCase.getTerm(id)).thenReturn(Term.of(id, "제목", "내용"));
 		mockMvc.perform(get("/api/term/{id}", id))
@@ -128,6 +139,16 @@ class TermControllerTest {
 				.andExpect(status().isNotFound())
 				.andExpect(jsonPath("$.httpStatus").value(404))
 				.andExpect(jsonPath("$.code").value("TERM_NOT_FOUND"));
+	}
+
+	@Test
+	void rejectInvalidPathId() throws Exception {
+		mockMvc.perform(get("/api/term/{id}", "not-a-uuid"))
+				.andExpect(status().isBadRequest());
+		mockMvc.perform(delete("/api/term/{id}", "not-a-uuid"))
+				.andExpect(status().isBadRequest());
+
+		verifyNoInteractions(getTermUseCase, deleteTermUseCase);
 	}
 
 	@Test
@@ -152,11 +173,55 @@ class TermControllerTest {
 	}
 
 	@Test
+	void rejectInvalidUpdateBodyId() throws Exception {
+		mockMvc.perform(patch("/api/term").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"id":"not-a-uuid","term_title":"제목","term_content":"내용"}
+						"""))
+				.andExpect(status().isBadRequest());
+
+		verifyNoInteractions(updateTermUseCase);
+	}
+
+	@Test
+	void returnNotFoundWhenUpdatingMissingTerm() throws Exception {
+		UpdateTermCommand command = new UpdateTermCommand(id, "제목", "내용");
+		doThrow(new TermNotFoundException()).when(updateTermUseCase).updateTerm(command);
+
+		mockMvc.perform(patch("/api/term").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"id":"%s","term_title":"제목","term_content":"내용"}
+						""".formatted(id)))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.httpStatus").value(404))
+				.andExpect(jsonPath("$.code").value("TERM_NOT_FOUND"));
+	}
+
+	@Test
+	void rejectMalformedJson() throws Exception {
+		mockMvc.perform(post("/api/term").contentType(MediaType.APPLICATION_JSON)
+				.content("{\"term_title\":"))
+				.andExpect(status().isBadRequest());
+
+		verifyNoInteractions(createTermUseCase);
+	}
+
+	@Test
 	void deleteTermUsingPathId() throws Exception {
 		mockMvc.perform(delete("/api/term/{id}", id))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.httpStatus").value(200))
 				.andExpect(jsonPath("$.data").doesNotExist());
 		verify(deleteTermUseCase).deleteTerm(id);
+	}
+
+	@Test
+	void returnNotFoundWhenDeletingMissingTerm() throws Exception {
+		doThrow(new TermNotFoundException()).when(deleteTermUseCase).deleteTerm(id);
+
+		mockMvc.perform(delete("/api/term/{id}", id))
+				.andExpect(status().isNotFound())
+				.andExpect(jsonPath("$.httpStatus").value(404))
+				.andExpect(jsonPath("$.code").value("TERM_NOT_FOUND"));
 	}
 }
