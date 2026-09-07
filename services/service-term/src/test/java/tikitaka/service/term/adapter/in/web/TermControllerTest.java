@@ -85,6 +85,24 @@ class TermControllerTest {
 	}
 
 	@Test
+	void rejectOverlongTitleBeforeCallingService() throws Exception {
+		String title = "가".repeat(256);
+
+		mockMvc.perform(post("/api/term").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"term_title":"%s","term_content":"약관 내용"}
+						""".formatted(title)))
+				.andExpect(status().isBadRequest());
+		mockMvc.perform(patch("/api/term").contentType(MediaType.APPLICATION_JSON)
+				.content("""
+						{"id":"%s","term_title":"%s","term_content":"약관 내용"}
+						""".formatted(id, title)))
+				.andExpect(status().isBadRequest());
+
+		verifyNoInteractions(createTermUseCase, updateTermUseCase);
+	}
+
+	@Test
 	void getAllTerms() throws Exception {
 		when(getTermsUseCase.getTerms()).thenReturn(List.of(Term.of(id, "제목", "내용")));
 		mockMvc.perform(get("/api/terms"))
