@@ -29,6 +29,6 @@ public class TermJpaEntity {
 	private String title;
 
 	@Lob
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "LONGTEXT")
 	private String content;
 }
