@@ -1,0 +1,57 @@
+@baseUrl = http://127.0.0.1:8084
+
+### 1. 로컬 테스트 약관 등록: 응답의 id를 다음 요청에 사용합니다.
+POST {{baseUrl}}/api/term
+Content-Type: application/json
+
+{
+  "term_title": "로컬 테스트 약관",
+  "term_content": "이 요청 파일로 생성한 테스트용 약관입니다."
+}
+
+> {%
+    client.test("등록 성공", function () {
+        client.assert(response.status === 200, "HTTP 200이어야 합니다.");
+    });
+    if (response.status === 200) {
+        client.global.set("termId", response.body.data.url.split("/").pop());
+    }
+%}
+
+### 2. 전체 조회
+GET {{baseUrl}}/api/terms
+
+### 3. 방금 등록한 약관 상세 조회
+GET {{baseUrl}}/api/term/{{termId}}
+
+### 4. 수정: id는 JSON body에 전달합니다.
+PATCH {{baseUrl}}/api/term
+Content-Type: application/json
+
+{
+  "id": "{{termId}}",
+  "term_title": "수정한 로컬 테스트 약관",
+  "term_content": "수정 후 상세 조회를 다시 실행해 확인할 수 있습니다."
+}
+
+### 5. 이 파일로 등록한 약관 삭제
+DELETE {{baseUrl}}/api/term/{{termId}}
+
+### 6. 삭제 후 조회: HTTP 404 / TERM_NOT_FOUND 확인
+GET {{baseUrl}}/api/term/{{termId}}
+
+> {%
+    client.test("삭제된 약관 조회", function () {
+        client.assert(response.status === 404, "HTTP 404이어야 합니다.");
+        client.assert(response.body.code === "TERM_NOT_FOUND", "오류 코드를 확인하세요.");
+    });
+%}
+
+### 7. 잘못된 입력: HTTP 400 확인
+POST {{baseUrl}}/api/term
+Content-Type: application/json
+
+{
+  "term_title": " ",
+  "term_content": "제목이 공백인 요청입니다."
+}
