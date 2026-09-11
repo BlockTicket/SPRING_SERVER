@@ -46,6 +46,41 @@ curl --fail http://127.0.0.1:8084/api/terms
 `requests.http`를 열어 위에서부터 요청을 실행하세요. 등록 응답의 UUID가 다음 요청에 자동으로 전달됩니다.
 5번 요청은 이 파일로 만든 약관을 삭제하므로, 수정 결과를 보고 싶다면 4번 후 3번을 다시 실행합니다.
 
+## 로컬 Gateway를 통한 호출
+
+약관 서버를 실행한 상태에서 새 터미널로 Gateway를 실행합니다.
+
+```sh
+./gradlew :services:service-gateway:bootRun --args='--spring.profiles.active=dev'
+```
+
+Gateway가 시작되면 다른 터미널에서 요청합니다.
+
+```sh
+curl --fail http://127.0.0.1:8080/term/api/terms
+```
+
+Gateway도 `dev` 프로필에서는 `127.0.0.1`에만 연결합니다.
+약관 경로는 `dev` 프로필에서만 활성화되며 기존 회원·파일 경로는 유지합니다.
+
+| Gateway 요청 | 약관 서버에 전달되는 요청 |
+| --- | --- |
+| `POST /term/api/term` | `POST /api/term` |
+| `GET /term/api/terms` | `GET /api/terms` |
+| `GET /term/api/term/{id}` | `GET /api/term/{id}` |
+| `PATCH /term/api/term` | `PATCH /api/term` |
+| `DELETE /term/api/term/{id}` | `DELETE /api/term/{id}` |
+
+`StripPrefix=1`과 같은 역할의 Java 설정으로 첫 번째 경로 조각인 `/term`만 제거합니다.
+기본 전달 주소는 `http://127.0.0.1:8084`이며, 필요한 경우 Gateway의 `SERVICE_TERM_URI` 환경변수로 변경합니다.
+기존 YAML의 경로 목록을 덮어쓰지 않고 `dev` 전용 경로만 추가하기 위해 Java 설정을 사용했습니다.
+
+`requests.http`의 `baseUrl`을 `http://127.0.0.1:8080/term`으로 바꾸면 같은 요청을 Gateway로 보낼 수 있습니다.
+응답의 `data.url`은 기존 약관 API 형식인 `/api/term/{id}`를 유지하므로, Gateway로 조회할 때는 그 앞에 `/term`을 붙입니다.
+
+이 설정은 **로컬 연결 확인용**입니다. 인증·관리자 권한을 추가한 것이 아니므로 외부 공개용으로 사용하지 않습니다.
+운영 Gateway 경로와 등록·수정·삭제 권한은 팀 정책을 확정한 뒤 별도로 반영해야 합니다.
+
 ## 테스트
 
 기존 단위 테스트와 MockMvc 테스트는 Docker 없이 실행합니다.
@@ -65,7 +100,17 @@ Compose DB나 로컬 `.env`는 사용하지 않습니다. 첫 실행에는 이�
 Docker가 꺼져 있으면 실패하며, 테스트를 조용히 건너뛰지 않습니다.
 일반 `test`/`check`에는 포함하지 않았으므로 전체 검증 시 두 명령을 모두 실행합니다.
 
-검증 내용:
+Gateway 경로는 Docker 없이 따로 검증할 수 있습니다.
+
+```sh
+./gradlew :services:service-gateway:test
+```
+
+실제 Gateway와 임시 HTTP 서버를 연결해 경로·메서드·본문·쿼리 문자열 전달, 400/404 응답 유지,
+기존 회원·파일 경로 유지, `dev`가 없는 경우 약관 경로 비활성화를 확인합니다.
+이 테스트는 MySQL이나 실제 회원·파일 서버에 연결하지 않습니다.
+
+MySQL 통합 테스트의 검증 내용:
 
 - HTTP 등록 → 전체/상세 조회 → 수정 → 삭제 → 삭제 후 404
 - 255자 한국어 제목과 긴 한국어 본문이 MySQL에 저장되는지 SQL로 확인
@@ -93,6 +138,6 @@ Testcontainers의 테스트 DB는 테스트 종료 시 정리됩니다.
 - 성공 응답의 `httpStatus`/`status`와 상세 조회의 객체/배열 표기
 - DELETE 요청 body에 중복 id가 필요한지 여부
 - 입력 검증 오류의 공통 응답 형식
-- Gateway 경로 및 등록·수정·삭제의 접근 권한
+- 운영 Gateway 경로 및 등록·수정·삭제의 접근 권한 (`dev` 로컬 연결만 구현)
 
 위 정책을 확정하기 전까지 이 개발용 설정을 외부 공개 환경에 사용하지 않습니다.
