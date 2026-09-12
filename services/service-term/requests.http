@@ -1,0 +1,51 @@
+@baseUrl = http://127.0.0.1:8084
+# Gateway(dev)를 통하려면 위 값을 http://127.0.0.1:8080/term 으로 변경합니다.
+# 실제 로그인·JWT 연동 전이므로 변경 요청은 401이 정상입니다.
+@termId = 00000000-0000-0000-0000-000000000001
+
+### 1. 공개 전체 조회
+GET {{baseUrl}}/api/terms
+
+### 2. 공개 상세 조회: 위 termId를 실제 약관 ID로 변경합니다. 없으면 404입니다.
+GET {{baseUrl}}/api/term/{{termId}}
+
+### 3. 인증 없는 등록 차단
+POST {{baseUrl}}/api/term
+Content-Type: application/json
+
+{
+  "term_title": "인증 없는 등록 요청",
+  "term_content": "DB에 저장되면 안 되는 내용입니다."
+}
+
+> {%
+    client.test("미인증 등록 차단", function () {
+        client.assert(response.status === 401, "HTTP 401이어야 합니다.");
+        client.assert(response.body.code === "TERM_AUTHENTICATION_REQUIRED", "오류 코드를 확인하세요.");
+    });
+%}
+
+### 4. 인증 없는 수정 차단
+PATCH {{baseUrl}}/api/term
+Content-Type: application/json
+
+{
+  "id": "{{termId}}",
+  "term_title": "인증 없는 수정 요청",
+  "term_content": "기존 내용이 바뀌면 안 됩니다."
+}
+
+> {%
+    client.test("미인증 수정 차단", function () {
+        client.assert(response.status === 401, "HTTP 401이어야 합니다.");
+    });
+%}
+
+### 5. 인증 없는 삭제 차단
+DELETE {{baseUrl}}/api/term/{{termId}}
+
+> {%
+    client.test("미인증 삭제 차단", function () {
+        client.assert(response.status === 401, "HTTP 401이어야 합니다.");
+    });
+%}
