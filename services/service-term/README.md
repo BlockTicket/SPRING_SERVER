@@ -21,7 +21,7 @@ docker compose --env-file services/service-term/.env -f services/service-term/co
 ```
 
 - MySQL: `127.0.0.1:13306`, 데이터베이스 `blockticket_term`
-- API: `http://127.0.0.1:8084`
+- API: `http://127.0.0.1:8085`
 - `dev` 프로필은 프로젝트 루트 기준 `services/service-term/.env`를 읽습니다.
 - Gradle `bootRun`의 작업 디렉터리는 프로젝트 루트로 고정했습니다.
 - 기본 `application.yaml`의 배포용 환경변수 설정은 유지합니다.
@@ -39,7 +39,7 @@ IntelliJ에서 직접 실행할 때는 `TermApplication`의 실행 설정을 다
 서버가 시작되면 다른 터미널에서 확인합니다.
 
 ```sh
-curl --fail http://127.0.0.1:8084/api/terms
+curl --fail http://127.0.0.1:8085/api/terms
 ```
 
 처음 실행한 DB에서는 `data: []`가 반환됩니다. IntelliJ HTTP Client의 `requests.http`로
@@ -89,7 +89,7 @@ Gateway도 `dev` 프로필에서는 `127.0.0.1`에만 연결합니다.
 | `DELETE /term/api/term/{id}` | `DELETE /api/term/{id}` |
 
 `StripPrefix=1`과 같은 역할의 Java 설정으로 첫 번째 경로 조각인 `/term`만 제거합니다.
-기본 전달 주소는 `http://127.0.0.1:8084`이며, 필요한 경우 Gateway의 `SERVICE_TERM_URI` 환경변수로 변경합니다.
+기본 전달 주소는 `http://127.0.0.1:8085`이며, 필요한 경우 Gateway의 `SERVICE_TERM_URI` 환경변수로 변경합니다.
 기존 YAML의 경로 목록을 덮어쓰지 않고 `dev` 전용 경로만 추가하기 위해 Java 설정을 사용했습니다.
 
 `requests.http`의 `baseUrl`을 `http://127.0.0.1:8080/term`으로 바꾸면 같은 요청을 Gateway로 보낼 수 있습니다.

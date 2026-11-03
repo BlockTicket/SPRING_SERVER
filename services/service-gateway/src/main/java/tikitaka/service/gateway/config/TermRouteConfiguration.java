@@ -19,7 +19,7 @@ public class TermRouteConfiguration {
 
     @Bean
     public RouterFunction<ServerResponse> termRoute(
-            @Value("${SERVICE_TERM_URI:http://127.0.0.1:8084}") String serviceTermUri
+            @Value("${SERVICE_TERM_URI:http://127.0.0.1:8085}") String serviceTermUri
     ) {
         return route("service-term")
                 .route(path("/term/**"), http())
