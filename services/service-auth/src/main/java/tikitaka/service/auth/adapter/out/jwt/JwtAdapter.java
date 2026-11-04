@@ -13,6 +13,7 @@ import tikitaka.service.auth.application.port.out.jwt.TokenPayload;
 import tikitaka.service.auth.domain.exception.exception.ExpiredTokenException;
 import tikitaka.service.auth.domain.exception.exception.InvalidTokenException;
 import tikitaka.service.auth.domain.role.Role;
+import tikitaka.service.auth.domain.token.TokenType;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +39,8 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 
 	@Override
 	public TokenPayload parse(
-			String token
+			String token,
+			TokenType expectedType
 	) {
 
 		try {
@@ -48,6 +50,11 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 					.build()
 					.parseSignedClaims(token)
 					.getPayload();
+
+			if (!expectedType.claim().equals(claims.get("type", String.class))) {
+
+				throw new InvalidTokenException();
+			}
 
 			return new TokenPayload(
 					UUID.fromString(claims.getSubject()),
@@ -69,7 +76,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 	) {
 
 		return new IssuedAccessToken(
-				buildToken(userId, role, accessTokenTtl),
+				buildToken(userId, role, accessTokenTtl, TokenType.ACCESS_TOKEN),
 				accessTokenTtl
 		);
 	}
@@ -81,7 +88,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 	) {
 
 		return new IssuedRefreshToken(
-				buildToken(userId, role, refreshTokenTtl),
+				buildToken(userId, role, refreshTokenTtl, TokenType.REFRESH_TOKEN),
 				refreshTokenTtl
 		);
 	}
@@ -89,7 +96,8 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 	private String buildToken(
 			UUID userId,
 			Role role,
-			Duration ttl
+			Duration ttl,
+			TokenType tokenType
 	) {
 
 		Date now = new Date();
@@ -98,6 +106,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 		return Jwts.builder()
 				.subject(userId.toString())
 				.claim("role", role.name())
+				.claim("type", tokenType.claim())
 				.issuedAt(now)
 				.expiration(expiration)
 				.signWith(secretKey)

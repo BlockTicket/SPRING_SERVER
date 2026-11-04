@@ -9,6 +9,7 @@ import tikitaka.service.auth.application.port.out.access_token.DeleteAccessToken
 import tikitaka.service.auth.application.port.out.jwt.ParseTokenPort;
 import tikitaka.service.auth.application.port.out.jwt.TokenPayload;
 import tikitaka.service.auth.application.port.out.refresh_token.DeleteRefreshTokenPort;
+import tikitaka.service.auth.domain.token.TokenType;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +25,7 @@ public class SignOutService implements SignOutUseCase {
 			SignOutCommand signoutCommand
 	) {
 
-		TokenPayload payload = parseTokenPort.parse(signoutCommand.accessToken());
+		TokenPayload payload = parseTokenPort.parse(signoutCommand.accessToken(), TokenType.ACCESS_TOKEN);
 
 		deleteRefreshTokenPort.deleteByUserIdAndRole(payload.userId(), signoutCommand.role());
 		deleteAccessTokenPort.deleteByUserIdAndRole(payload.userId(), signoutCommand.role());

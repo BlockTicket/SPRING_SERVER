@@ -13,6 +13,7 @@ import tikitaka.service.auth.application.port.out.refresh_token.FindRefreshToken
 import tikitaka.service.auth.domain.exception.exception.RefreshTokenMismatchException;
 import tikitaka.service.auth.domain.exception.exception.RefreshTokenNotFoundException;
 import tikitaka.service.auth.domain.refresh_token.RefreshToken;
+import tikitaka.service.auth.domain.token.TokenType;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class RefreshTokenService implements RefreshTokenUseCase {
 			RefreshTokenCommand refreshTokenCommand
 	) {
 
-		TokenPayload payload = parseTokenPort.parse(refreshTokenCommand.refreshToken());
+		TokenPayload payload = parseTokenPort.parse(refreshTokenCommand.refreshToken(), TokenType.REFRESH_TOKEN);
 
 		RefreshToken stored = findRefreshTokenPort
 				.findByUserIdAndRole(payload.userId(), refreshTokenCommand.role())
