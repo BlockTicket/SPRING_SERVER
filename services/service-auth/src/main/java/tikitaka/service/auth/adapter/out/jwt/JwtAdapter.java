@@ -57,13 +57,14 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 			}
 
 			return new TokenPayload(
+					UUID.fromString(claims.getId()),
 					UUID.fromString(claims.getSubject()),
 					Role.valueOf(claims.get("role", String.class))
 			);
 		} catch (ExpiredJwtException e) {
 
 			throw new ExpiredTokenException();
-		} catch (JwtException | IllegalArgumentException e) {
+		} catch (JwtException | IllegalArgumentException | NullPointerException e) {
 
 			throw new InvalidTokenException();
 		}
@@ -104,6 +105,7 @@ public class JwtAdapter implements ParseTokenPort, IssueAccessTokenPort, IssueRe
 		Date expiration = new Date(now.getTime() + ttl.toMillis());
 
 		return Jwts.builder()
+				.id(UUID.randomUUID().toString())
 				.subject(userId.toString())
 				.claim("role", role.name())
 				.claim("type", tokenType.claim())
