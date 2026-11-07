@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @ConfigurationProperties(prefix = "tikitaka.kafka")
 public record KafkaProperties(
 
-        @DefaultValue("localhost:29092")
+        @DefaultValue("localhost:9092")
         String bootstrapServers,
 
         @DefaultValue

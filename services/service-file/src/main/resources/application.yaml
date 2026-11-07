@@ -21,7 +21,7 @@ aws:
 
 tikitaka:
   kafka:
-    bootstrap-servers: localhost:29092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
       group-id: service-file
       auto-offset-reset: earliest

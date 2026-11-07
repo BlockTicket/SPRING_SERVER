@@ -5,7 +5,6 @@ import com.l98293.phone.Phone;
 import com.l98293.phone.Region;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import tikitaka.service.member.application.port.in.member.RegisterMemberCommand;
 import tikitaka.service.member.domain.member.Provider;
@@ -34,7 +33,6 @@ public record RegisterMemberRequest(
 		)
 		String password,
 
-		@NotNull
 		Provider provider
 ) {
 
@@ -46,7 +44,7 @@ public record RegisterMemberRequest(
 				email,
 				phone,
 				password,
-				provider
+				provider == null ? Provider.LOCAL : provider
 		);
 	}
 }
