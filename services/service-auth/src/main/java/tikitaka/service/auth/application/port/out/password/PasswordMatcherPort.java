@@ -6,4 +6,8 @@ public interface PasswordMatcherPort {
 			String rawPassword,
 			String encodedPassword
 	);
+
+	void matchesDummy(
+			String rawPassword
+	);
 }

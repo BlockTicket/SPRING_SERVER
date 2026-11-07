@@ -13,8 +13,7 @@ import tikitaka.service.auth.application.port.out.jwt.IssueRefreshTokenPort;
 import tikitaka.service.auth.application.port.out.password.PasswordMatcherPort;
 import tikitaka.service.auth.application.port.out.refresh_token.SaveRefreshTokenPort;
 import tikitaka.service.auth.domain.credential.Credential;
-import tikitaka.service.auth.domain.exception.exception.CredentialNotFoundException;
-import tikitaka.service.auth.domain.exception.exception.InvalidPasswordException;
+import tikitaka.service.auth.domain.exception.exception.InvalidCredentialsException;
 import tikitaka.service.auth.domain.refresh_token.RefreshToken;
 
 import java.time.LocalDateTime;
@@ -38,9 +37,14 @@ public class SignInService implements SignInUseCase {
 
 		Credential credential = findCredentialPort
 				.findByUsernameAndRole(signinCommand.username(), signinCommand.role())
-				.orElseThrow(CredentialNotFoundException::new);
+				.orElseThrow(() -> {
 
-		if (!passwordMatcherPort.matches(signinCommand.password(), credential.getPassword())) throw new InvalidPasswordException();
+					passwordMatcherPort.matchesDummy(signinCommand.password());
+
+					return new InvalidCredentialsException();
+				});
+
+		if (!passwordMatcherPort.matches(signinCommand.password(), credential.getPassword())) throw new InvalidCredentialsException();
 
 		IssueAccessTokenPort.IssuedAccessToken access = issueAccessTokenPort.issueAccessToken(
 				credential.getId(),
